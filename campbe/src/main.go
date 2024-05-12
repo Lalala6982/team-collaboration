@@ -1,13 +1,13 @@
 package main
 
 import (
-	"campbe/handler"
+	// "campbe/handler"
 	"fmt"
-	"log"
-	"net/http"
+	// "log"
+	// "net/http"
 )
 
 func main() {
     fmt.Println("started-service")
-    log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
+    // log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
 }

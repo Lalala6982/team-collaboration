@@ -10,12 +10,12 @@ import (
 )
 
 func InitRouter() http.Handler {
-    // jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
-    //     ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-    //         return []byte(mySigningKey), nil
-    //     },
-    //     SigningMethod: jwt.SigningMethodHS256,
-    // })
+    jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
+        ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+            return []byte(mySigningKey), nil
+        },
+        SigningMethod: jwt.SigningMethodHS256,
+    })
 
     router := mux.NewRouter()
     router.Handle("/upload", http.HandlerFunc(uploadOrderHandler)).Methods("POST")
