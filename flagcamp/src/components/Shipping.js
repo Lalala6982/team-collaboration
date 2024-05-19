@@ -1,29 +1,48 @@
-import React from "react";
-import NavBar from "./components/NavBar";
-import { Form, Layout } from "antd";
+import React, {useState } from "react";
+import { Button, Divider } from "antd";
+import "../App.css";
+import ShipFromForm from "./ShipFromForm";
+import ShipToForm from "./ShipToForm";
+import PackageForm from "./PackageForm";
+import Recommendation from "./Recommendation";
 
-const { Header, Content } = Layout;
+const Shipping = () => {
+  const [showRecommendation, setShowRecommendation] = useState(false);
 
-function Shipping() {
+  const handleClick = () => {
+    setShowRecommendation(true);
+  };
+
+  if (showRecommendation) {
+    return <Recommendation />;
+  }
   return (
-    <Layout style={{ height: "100vh" }}>
-      <Header
-        className="site-header-backgroud"
-        style={{ display: "flex", justifyContent: "space-between" }}
-      >
-        <div className="site-name-font" >Shipping Service</div>
-        <NavBar />
-      </Header>
-      <Content
-        className="site-layout-background"
-        style={{
-          padding: 300,
-          height: "calc(100% - 64px)",
-          overflow: "auto",
-        }}
-      ></Content>
-    </Layout>
+    <div className="shipping-info-container">
+      <h1 style={{ fontSize: 40 }}>Create a Shipment</h1>
+      <Divider style={{ color: "gray" }} />
+      <main className="form-container">
+        <section>
+          <section className="column">
+            <ShipFromForm />
+          </section>
+          <section className="column">
+            <ShipToForm />
+          </section>
+        </section>
+        <section className="column">
+          <PackageForm />
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="package-form-submit-button"
+            onClick={handleClick}
+          >
+            Continue
+          </Button>
+        </section>
+      </main>
+    </div>
   );
-}
+};
 
 export default Shipping;
