@@ -15,7 +15,7 @@ const { Header, Content } = Layout;
 const { TabPane } = Tabs;
 
 const App = () => {
-  const [authed, setAuthed] = useState();
+  const [authed, setAuthed] = useState(); // Remember to set to false at final implementation
   const [currentTab, setCurrentTab] = useState("1");
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
@@ -65,12 +65,10 @@ const App = () => {
   const renderContent = (key) => {
     switch (key) {
       case "1":
-        return <HomePage />;
+        return <HomePage authed={authed} />;
       case "2":
         return (<Shipping />);
       case "3":
-        return (<OrderHistory/>);
-      case "4":
         return <About />;
     }
   };
@@ -91,8 +89,7 @@ const App = () => {
           >
             <TabPane tab="Home" key="1" />
             <TabPane tab="Shipping" key="2"/>
-            <TabPane tab ="Tracking" key = "3"/>
-            <TabPane tab="About Us" key="4" />
+            <TabPane tab="About Us" key="3" />
           </Tabs>
           <div style={{
             marginLeft: 30, marginTop: 48

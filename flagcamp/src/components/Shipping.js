@@ -18,7 +18,7 @@ const Shipping = () => {
   }
   return (
     <div className="shipping-info-container">
-      <h1 style={{ fontSize: 40 }}>Create a Shipment</h1>
+      <h1 className='header-text'>Create a Shipment</h1>
       <Divider style={{ color: "gray" }} />
       <main className="form-container">
         <section>

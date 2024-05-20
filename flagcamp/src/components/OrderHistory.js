@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Input, Button, Space, Divider, Row, Col } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import "../App.css";
 
 const data = [
   { key: '1', date: 'Dec 5', orderId: 123486, trackingId: 5098021, status: 'Delivered' },
@@ -49,7 +50,7 @@ function OrderHistory() {
     <div>
         <Row justify="space-between">
             <Col>
-                <h1 style={{ fontSize: 40 }}>Order History</h1>
+                <h1 className='header-text'>Order History</h1>
             </Col>
             <Col>
                 <Space>

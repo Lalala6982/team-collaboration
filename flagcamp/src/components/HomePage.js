@@ -1,15 +1,14 @@
 import React from "react";
 import Tracking from "./Tracking";
+import OrderHistory from "./OrderHistory";
+import { Modal } from "antd";
 
-const HomePage = () => {
-    return (
-        <div
-          style={{display: "flex", justifyContent: "center", alignItems: "center", height:"80vh" }}
-        >
-          <Tracking />
-        </div>
-      );
-
+const HomePage = ({ authed }) => { // 接收 authed 作为 prop
+  if (authed) {
+    return <OrderHistory/>
+  } else {
+    return <Tracking/>
+  }
 };
 
 export default HomePage;
