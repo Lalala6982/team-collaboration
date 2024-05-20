@@ -6,6 +6,8 @@ import Shipping from "./components/Shipping";
 import { UserOutlined } from "@ant-design/icons";
 import SignupButton from "./components/SignupButton";
 import LoginForm from "./components/LoginForm";
+import OrderSummary from "./components/OrderSummary";
+import OrderHistory from "./components/OrderHistory";
 
 
 
@@ -67,6 +69,8 @@ const App = () => {
       case "2":
         return (<Shipping />);
       case "3":
+        return (<OrderHistory/>);
+      case "4":
         return <About />;
     }
   };
@@ -87,7 +91,8 @@ const App = () => {
           >
             <TabPane tab="Home" key="1" />
             <TabPane tab="Shipping" key="2"/>
-            <TabPane tab="About Us" key="3" />
+            <TabPane tab ="Tracking" key = "3"/>
+            <TabPane tab="About Us" key="4" />
           </Tabs>
           <div style={{
             marginLeft: 30, marginTop: 48
