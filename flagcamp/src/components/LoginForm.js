@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Input, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { login } from "../utils";
+//import { login } from "../utils";
 
 const LoginForm = ({ onLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -10,7 +10,7 @@ const LoginForm = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      await login(data);
+      //await login(data);
       onLoginSuccess();
     } catch (error) {
       message.error(error.message);

@@ -6,6 +6,8 @@ import Shipping from "./components/Shipping";
 import { UserOutlined } from "@ant-design/icons";
 import SignupButton from "./components/SignupButton";
 import LoginForm from "./components/LoginForm";
+import OrderSummary from "./components/OrderSummary";
+import OrderHistory from "./components/OrderHistory";
 
 
 
@@ -13,7 +15,7 @@ const { Header, Content } = Layout;
 const { TabPane } = Tabs;
 
 const App = () => {
-  const [authed, setAuthed] = useState();
+  const [authed, setAuthed] = useState(); // Remember to set to false at final implementation
   const [currentTab, setCurrentTab] = useState("1");
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
@@ -63,7 +65,7 @@ const App = () => {
   const renderContent = (key) => {
     switch (key) {
       case "1":
-        return <HomePage />;
+        return <HomePage authed={authed} />;
       case "2":
         return (<Shipping />);
       case "3":
