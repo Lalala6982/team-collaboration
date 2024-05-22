@@ -3,11 +3,17 @@ package main
 import (
 	// "campbe/handler"
 	"fmt"
-	// "log"
+	"log"
 	// "net/http"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-    fmt.Println("started-service")
+	err := godotenv.Load()
+	if err !=nil{
+		log.Fatal("Error loading .env file")
+	}
+	fmt.Println("started-service")
     // log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
 }
