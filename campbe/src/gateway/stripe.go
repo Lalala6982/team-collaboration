@@ -1,17 +1,17 @@
-package stripe
+package gateway
 
 import (
-	"appstore/constants"
+	"campbe/model"
 	"fmt"
 
-	"github.com/stripe/stripe-go/v74/checkout/session"
 	"github.com/stripe/stripe-go/v74"
+	"github.com/stripe/stripe-go/v74/checkout/session"
 	"github.com/stripe/stripe-go/v74/price"
 	"github.com/stripe/stripe-go/v74/product"
 )
 
 func CreateProductWithPrice(appTitle string, appDescription string, appPrice int64) (productID, priceID string, err error) {
-   stripe.Key = constants.STRIPE_API_KEY
+   stripe.Key = model.STRIPE_API_KEY
    product_params := &stripe.ProductParams{
        Name:        &appTitle,
        Description: &appDescription,
@@ -40,7 +40,7 @@ func CreateProductWithPrice(appTitle string, appDescription string, appPrice int
 }
 
 func CreateCheckoutSession(domain string, priceID string) (string, error) {
-	stripe.Key = constants.STRIPE_API_KEY
+	stripe.Key = model.STRIPE_API_KEY
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 		   {
