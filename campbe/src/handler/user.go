@@ -1,16 +1,17 @@
 package handler
+
 // code from appstore go
 import (
-    "encoding/json"
-    "fmt"
-    "net/http"
-    "regexp"
-    "time"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"regexp"
+	"time"
 
-    "campbe/model"
-    "campbe/service"
+	"campbe/model"
+	"campbe/service"
 
-    jwt "github.com/form3tech-oss/jwt-go"
+	jwt "github.com/form3tech-oss/jwt-go"
 )
 
 var mySigningKey = []byte("secret")

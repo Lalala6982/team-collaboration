@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Divider, Button } from "antd";
 import ShippingOptions from "./ShippingOptions";
 import OrderSummary from "./OrderSummary";
+import "../App.css";
 
 const { Item } = Form;
 
@@ -9,7 +10,7 @@ const Recommendation = () => {
   const handleClick = () => {};
   return (
     <div className="shipping-info-container">
-      <h1 style={{ fontSize: 40 }}>Select a Shipping Service Option</h1>
+      <h1 className="header-text">Select a Shipping Service Option</h1>
       <Divider style={{ color: "gray" }} />
       <main className="form-container">
         <section>

@@ -2,6 +2,7 @@ package main
 
 import (
 	// "campbe/handler"
+	"campbe/gateway"
 	"fmt"
 	"log"
 	// "net/http"
@@ -10,10 +11,6 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err !=nil{
-		log.Fatal("Error loading .env file")
-	}
-	fmt.Println("started-service")
+    fmt.Println("started-service")
     // log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
 }

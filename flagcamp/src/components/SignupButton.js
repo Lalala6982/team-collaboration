@@ -1,7 +1,7 @@
 import { Button, Form, Modal, Input, message } from "antd";
 import { useState } from "react";
 import { UserOutlined } from "@ant-design/icons";
-import { register } from "../utils";
+//import { register } from "../utils";
 
 const SignupButton = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -11,9 +11,9 @@ const SignupButton = () => {
     setModalVisible(true);
   };
     
-    const handleRegisterCancel = () => { 
-        setModalVisible(false);
-    }
+  const handleRegisterCancel = () => { 
+      setModalVisible(false);
+  }
 
   const handleFormSubmit = async (data) => {
     setLoading(true);

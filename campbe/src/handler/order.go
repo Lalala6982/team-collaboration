@@ -1,15 +1,6 @@
 package handler
 
-import (
-	mysql "campbe/database"
-	"campbe/model"
-	"fmt"
-	"log"
-	"net/http"
-
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
-)
+import ()
 
 // user submit order information and create a new entry
 func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
