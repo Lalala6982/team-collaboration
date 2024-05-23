@@ -1,7 +1,7 @@
-package mysql
+package database
 
 import (
-	"campbe/constants"
+	"campbe/model"
 	"database/sql"
 	"fmt"
 	"log"
@@ -10,31 +10,29 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func OpenDB()(*sql.DB, error) {
-    // Replace the following with your actual database credentials
-    
-    user := os.Getenv(constants.DB_USER)
-    password := os.Getenv(constants.DB_PASSWORD)
-    host := os.Getenv(constants.DB_HOST)
-    port := os.Getenv(constants.DB_HOST)
-    database := os.Getenv(constants.DB_NAME)
+func OpenDB() (*sql.DB, error) {
+	// Replace the following with your actual database credentials
 
-    dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database, )
-   
-    db, err := sql.Open("mysql", dsn)
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer db.Close()
+	user := os.Getenv(model.DB_USER)
+	password := os.Getenv(model.DB_PASSWORD)
+	host := os.Getenv(model.DB_HOST)
+	port := os.Getenv(model.DB_HOST)
+	database := os.Getenv(model.DB_NAME)
 
-    // Verify the connection
-    err = db.Ping()
-    if err != nil {
-        log.Fatal(err)
-    }
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
 
-    fmt.Println("Connected to the database!")
-    return db, nil
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	// Verify the connection
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Connected to the database!")
+	return db, nil
 }
-
-

@@ -1,6 +1,14 @@
 package handler
 
-import "net/http"
+import (
+	"campbe/database"
+	"campbe/model"
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/google/uuid"
+)
 
 // user submit order information and create a new entry
 func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,8 +39,8 @@ func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
 		TotalWeight: r.FormValue("total_weight"),
 	}
 
-	db, err := mysql.OpenDB()
-	if err != nil{
+	db, err := database.OpenDB()
+	if err != nil {
 		log.Fatal(err)
 		http.Error(w, "Datbase connection error", http.StatusInternalServerError)
 		return
@@ -40,15 +48,15 @@ func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	stmt, err := db.Prepare(`INSERT INTO orders (id, shipper, from_address, from_zip_code, from-city, from_country, from _phone, from_email, consigee, to_address, to _zip_cod, to_city, to_county, to_phone, to_email, total_weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 		http.Error(w, "Database preparation error", http.StatusInternalServerError)
 		return
 	}
 	defer stmt.Close()
 
-	_, err =stmt.Exec(order.Id, order.Shipper, order.FromAddress, order.FromZipCode, order.FromCity, order.FromCounty, order.FromPhone, order.FromEmail, order.Consigee, order.ToAddress, order.ToZipCode, order.ToCity, order.ToCounty, order.ToPhone, order.ToEmail, order.TotalWeight)
-	if err !=nil{
+	_, err = stmt.Exec(order.Id, order.Shipper, order.FromAddress, order.FromZipCode, order.FromCity, order.FromCounty, order.FromPhone, order.FromEmail, order.Consigee, order.ToAddress, order.ToZipCode, order.ToCity, order.ToCounty, order.ToPhone, order.ToEmail, order.TotalWeight)
+	if err != nil {
 		log.Fatal(err)
 		http.Error(w, "Database execution error", http.StatusInternalServerError)
 		return
@@ -60,7 +68,6 @@ func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
 // provide shipping options based on the order information for users
 func recommendHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Recommendation Generated")
-	
 
 }
 
