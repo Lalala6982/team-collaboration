@@ -10,12 +10,12 @@ import (
 )
 
 func InitRouter() http.Handler {
-    jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
-        ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-            return []byte(mySigningKey), nil
-        },
-        SigningMethod: jwt.SigningMethodHS256,
-    })
+	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
+		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+			return []byte(mySigningKey), nil
+		},
+		SigningMethod: jwt.SigningMethodHS256,
+	})
 
     router := mux.NewRouter()
     router.Handle("/upload", http.HandlerFunc(uploadOrderHandler)).Methods("POST")
@@ -26,9 +26,9 @@ func InitRouter() http.Handler {
     router.Handle("/signup", http.HandlerFunc(signupHandler)).Methods("POST")
     router.Handle("/signin", http.HandlerFunc(signinHandler)).Methods("POST")
 
-    originsOk := handlers.AllowedOrigins([]string{"*"})
-    headersOk := handlers.AllowedHeaders([]string{"Authorization", "Content-Type"})
-    methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "DELETE"})
-    return handlers.CORS(originsOk, headersOk, methodsOk)(router)
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	headersOk := handlers.AllowedHeaders([]string{"Authorization", "Content-Type"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "DELETE"})
+	return handlers.CORS(originsOk, headersOk, methodsOk)(router)
 }
 

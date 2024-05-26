@@ -27,7 +27,6 @@ github.com/gorilla/handlers
 github.com/gorilla/mux
 # github.com/joho/godotenv v1.5.1
 ## explicit; go 1.12
-github.com/joho/godotenv
 # github.com/stripe/stripe-go/v74 v74.30.0
 ## explicit; go 1.13
 github.com/stripe/stripe-go/v74

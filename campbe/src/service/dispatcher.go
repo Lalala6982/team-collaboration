@@ -7,9 +7,16 @@ import (
 	"campbe/model"
 	"fmt"
 	"log"
+	"fmt"
+	"log"
 )
 
 type Option struct {
+	baseId         int
+	transportation string
+	distance       float64
+	duration       int
+	price          float64
 	baseId         int
 	transportation string
 	distance       float64
@@ -45,6 +52,7 @@ func GetDispatchingOptions(from, to string) ([3]Option, error) {
 			options[0].baseId = index
 			options[0].distance = distance1 + distance2
 			options[0].duration = duration1
+			options[0].duration = duration1
 		}
 	}
 	distance1, duration1 := gateway.GetRobotRoute(from, to)
@@ -58,7 +66,19 @@ func GetDispatchingOptions(from, to string) ([3]Option, error) {
 		distance2, _ := gateway.GetDroneRoute(to, base.BaseAddress)
 		if distance1+distance2 < options[1].distance {
 			options[1].baseId = index
+	distance1, duration1 := gateway.GetRobotRoute(from, to)
+	options[0].distance += distance1
+	options[0].duration += duration1
+	// Fastest: drone route
+	options[1].transportation = "drone"
+	options[1].distance = 1e9
+	for index, base := range bases {
+		distance1, duration1 := gateway.GetDroneRoute(base.BaseAddress, from)
+		distance2, _ := gateway.GetDroneRoute(to, base.BaseAddress)
+		if distance1+distance2 < options[1].distance {
+			options[1].baseId = index
 			options[1].distance = distance1 + distance2
+			options[1].duration = duration1
 			options[1].duration = duration1
 		}
 	}
