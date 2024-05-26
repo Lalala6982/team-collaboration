@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	jwt "github.com/form3tech-oss/jwt-go"
 	"github.com/google/uuid"
@@ -22,28 +23,50 @@ func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	totalWeight, err := strconv.Atoi(r.FormValue("total_weight"))
+    if err != nil {
+        http.Error(w, "Invalid total weight format", http.StatusBadRequest)
+        return
+    }
+
+	price, err := strconv.Atoi(r.FormValue("price"))
+    if err != nil {
+        http.Error(w, "Invalid price format", http.StatusBadRequest)
+        return
+    }
+
 	order := model.Order{
 		Id:          uuid.New().String(),
-		Shipper:     r.FormValue("shipper"),
-		FromAddress: r.FormValue("from_address"),
-		FromZipCode: r.FormValue("from_zip_code"),
-		FromCity:    r.FormValue("from_city"),
-		FromCounty:  r.FormValue("from_county"),
-		FromPhone:   r.FormValue("from_phone"),
-		FromEmail:   r.FormValue("from_email"),
-		Consigee:    r.FormValue("consigee"),
-		ToAddress:   r.FormValue("to_address"),
-		ToZipCode:   r.FormValue("to_zip_code"),
-		ToCity:      r.FormValue("to_city"),
-		ToCounty:    r.FormValue("to_county"),
-		ToPhone:     r.FormValue("to_phone"),
-		ToEmail:     r.FormValue("to_email"),
-		TotalWeight: r.FormValue("total_weight"),
+        Shipper:     r.FormValue("shipper"),
+        FromAddress: r.FormValue("from_address"),
+        FromZipCode: r.FormValue("from_zip_code"),
+        FromCity:    r.FormValue("from_city"),
+        FromCounty:  r.FormValue("from_county"),
+        FromPhone:   r.FormValue("from_phone"),
+        FromEmail:   r.FormValue("from_email"),
+        Consignee:   r.FormValue("consignee"),
+        ToAddress:   r.FormValue("to_address"),
+        ToZipCode:   r.FormValue("to_zip_code"),
+        ToCity:      r.FormValue("to_city"),
+        ToCounty:    r.FormValue("to_county"),
+        ToPhone:     r.FormValue("to_phone"),
+        ToEmail:     r.FormValue("to_email"),
+        TotalWeight: totalWeight,
+        Status:      r.FormValue("status"),
+        OrderTime:   r.FormValue("order_time"),
+        ProductID:   r.FormValue("product_id"),
+        Price:       price,
+        PriceID:     r.FormValue("price_id"),
+        DeliverID:   r.FormValue("deliver_id"),
 	}
+
+
 	
 
 	// Get recommendation
-	options, err := service.GetDispatchingOptions(order.FromAddress, order.ToAddress)
+	fromFields := fmt.Sprintf("%s, %s, %s", order.FromAddress, order.FromCity, order.FromZipCode)
+    toFields := fmt.Sprintf("%s, %s, %s", order.ToAddress, order.ToCity, order.ToZipCode)
+	options, err := service.GetDispatchingOptions(fromFields, toFields)
 	if err != nil {
 		http.Error(w, "Failed to get dispatching options", http.StatusInternalServerError)
 		return
