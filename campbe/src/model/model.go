@@ -20,16 +20,14 @@ type Order struct {
 	Status      string `json:"status"`
 	OrderTime   string `json:"order_time"`
 	Price       int    `json:"price"`
-	//	ProductID   string `json:"product_id"`
-	PriceID   int `json:"price_id"`
-	DeliverID int `json:"deliver_id"`
+	PriceID     int    `json:"price_id"`
+	DeliverID   int    `json:"deliver_id"`
 }
 
 type User struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	Username string   `json:"username"`
+	Password string   `json:"password"`
+	Index    []string `json:"id"`
 }
 
 type Base struct {
