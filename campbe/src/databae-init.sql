@@ -19,8 +19,8 @@ CREATE TABLE users(
 CREATE TABLE bases(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     base_address VARCHAR(255) NOT NULL,
-    num_of_robots INT NOT NULL,
-    num_of_drones INT NOT NULL,
+    -- num_of_robots INT NOT NULL,
+    -- num_of_drones INT NOT NULL,
     enabled TINYINT NOT NULL DEFAULT 1
 );
 

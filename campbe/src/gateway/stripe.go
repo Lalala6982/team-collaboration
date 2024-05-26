@@ -1,7 +1,7 @@
 package gateway
 
 import (
-	"campbe/model"
+	"campbe/constants"
 	"fmt"
 
 	"github.com/stripe/stripe-go/v74"
@@ -10,13 +10,12 @@ import (
 	"github.com/stripe/stripe-go/v74/product"
 )
 
-func CreateProductWithPrice(appTitle string, appDescription string, appPrice int64) (productID, priceID string, err error) {
-   stripe.Key = model.STRIPE_API_KEY
+func CreateOrderWithPrice(orderID string, orderPrice int64) (productID, priceID string, err error) {
+   stripe.Key = constants.STRIPE_API_KEY
    product_params := &stripe.ProductParams{
-       Name:        &appTitle,
-       Description: &appDescription,
+       ID:        &orderID,
    }
-   newProduct, err := product.New(product_params)
+   newOrder, err := product.New(product_params)
    if err != nil {
        fmt.Println("Failed to create product:" + err.Error())
        return "", "", err
@@ -24,8 +23,8 @@ func CreateProductWithPrice(appTitle string, appDescription string, appPrice int
 
    price_params := &stripe.PriceParams{
        Currency:   stripe.String(string(stripe.CurrencyUSD)),
-       Product:    stripe.String(newProduct.ID),
-       UnitAmount: &appPrice,
+	   Product:    stripe.String(newOrder.ID),
+       UnitAmount: &orderPrice,
    }
    newPrice, err := price.New(price_params)
    if err != nil {
@@ -33,14 +32,14 @@ func CreateProductWithPrice(appTitle string, appDescription string, appPrice int
        return "", "", err
    }
 
-   fmt.Println("Success! Here is your product id: " + newProduct.ID)
+   fmt.Println("Success! Here is your order id: " + newOrder.ID)
    fmt.Println("Success! Here is your price id: " + newPrice.ID)
 
-   return newProduct.ID, newPrice.ID, nil
+   return newOrder.ID, newPrice.ID, nil
 }
 
 func CreateCheckoutSession(domain string, priceID string) (string, error) {
-	stripe.Key = model.STRIPE_API_KEY
+	stripe.Key = constants.STRIPE_API_KEY
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 		   {

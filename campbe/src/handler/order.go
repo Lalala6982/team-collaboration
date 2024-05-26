@@ -1,6 +1,16 @@
 package handler
 
-import "net/http"
+import (
+	"campbe/database"
+	"campbe/model"
+	"campbe/service"
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	jwt "github.com/form3tech-oss/jwt-go"
+	"github.com/google/uuid"
+)
 
 // user submit order information and create a new entry
 func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,45 +40,88 @@ func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
 		ToEmail:     r.FormValue("to_email"),
 		TotalWeight: r.FormValue("total_weight"),
 	}
+	
 
-	db, err := mysql.OpenDB()
-	if err != nil{
-		log.Fatal(err)
-		http.Error(w, "Datbase connection error", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	stmt, err := db.Prepare(`INSERT INTO orders (id, shipper, from_address, from_zip_code, from-city, from_country, from _phone, from_email, consigee, to_address, to _zip_cod, to_city, to_county, to_phone, to_email, total_weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-	if err != nil{
-		log.Fatal(err)
-		http.Error(w, "Database preparation error", http.StatusInternalServerError)
-		return
-	}
-	defer stmt.Close()
-
-	_, err =stmt.Exec(order.Id, order.Shipper, order.FromAddress, order.FromZipCode, order.FromCity, order.FromCounty, order.FromPhone, order.FromEmail, order.Consigee, order.ToAddress, order.ToZipCode, order.ToCity, order.ToCounty, order.ToPhone, order.ToEmail, order.TotalWeight)
-	if err !=nil{
-		log.Fatal(err)
-		http.Error(w, "Database execution error", http.StatusInternalServerError)
+	// Get recommendation
+	options, err := service.GetDispatchingOptions(order.FromAddress, order.ToAddress)
+	if err != nil {
+		http.Error(w, "Failed to get dispatching options", http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Fprintf(w, "Order has been sucessfully uploaded with ID: %s", order.Id)
+	// Print or handle the options
+	fmt.Println(options)
+
+
+	// Save the order to the database
+	if err := database.SaveToDB(order); err != nil {
+		http.Error(w, "Failed to save order to database", http.StatusInternalServerError)
+		return
+	}
+
+	// Respond to the client
+	fmt.Fprintf(w, "Order saved successfully")
 }
 
 // provide shipping options based on the order information for users
-func recommendHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Recommendation Generated")
+// func recommendHandler(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Println("Recieved Recommendation Request")
 	
 
-}
+// }
 
 // user confirm final decision and dispatching centers deal with the shipping
-func dispatchHandler(w http.ResponseWriter, r *http.Request) {}
+// func dispatchHandler(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Println("Received Dispatching Request")
+// }
 
 // user payment
-func checkoutHandler(w http.ResponseWriter, r *http.Request) {}
-
+func checkoutHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Received one checkout request")
+	w.Header().Set("Content-Type", "text/plain")
+	orderID := r.FormValue("appID")
+	url, err := service.CheckoutApp(r.Header.Get("Origin"), orderID)
+	if err != nil {
+		fmt.Println("Checkout failed.")
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(url))
+	fmt.Println("Checkout process started!")
+}
 // track the status of an order
 func trackHandler(w http.ResponseWriter, r *http.Request) {}
+
+func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Received Order History request")
+	token := r.Context().Value("user").(*jwt.Token)
+    claims := token.Claims.(jwt.MapClaims)
+    username := claims["username"].(string)
+
+    //1. process request: URL param -> string
+	w.Header().Set("Content-Type", "application/json")
+    // status := r.URL.Query().Get("status")
+	// price := r.URL.Query().Get("price")
+	// orderTime := r.URL.Query().Get("order_time")
+	// deliverID := r.URL.Query().Get("deliver_id")
+
+	// Fetch orders from service user
+	orders, err := service.GetOrderHistory(username)
+	if err != nil {
+		http.Error(w, "Failed to read orders from backend", http.StatusInternalServerError)
+		return
+	}
+
+	// Construct response
+	js, err := json.Marshal(orders)
+	if err != nil {
+		http.Error(w, "Failed to parse orders into JSON format", http.StatusInternalServerError)
+		return
+	}
+
+	// Set response headers and write response
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+	
+ }

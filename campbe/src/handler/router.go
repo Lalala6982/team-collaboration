@@ -19,8 +19,8 @@ func InitRouter() http.Handler {
 
     router := mux.NewRouter()
     router.Handle("/upload", http.HandlerFunc(uploadOrderHandler)).Methods("POST")
-    router.Handle("/recommend", http.HandlerFunc(recommendHandler)).Methods("GET")
-    router.Handle("/dispatch", http.HandlerFunc(dispatchHandler)).Methods("GET")
+    // router.Handle("/recommend", http.HandlerFunc(recommendHandler)).Methods("GET")
+    router.Handle("/orderhistory", jwtMiddleware.Handler(http.HandlerFunc(orderHistoryHandler))).Methods("GET")
     router.Handle("/checkout", http.HandlerFunc(checkoutHandler)).Methods("POST")
     router.Handle("/track", http.HandlerFunc(trackHandler)).Methods("GET")
     router.Handle("/signup", http.HandlerFunc(signupHandler)).Methods("POST")
@@ -31,3 +31,4 @@ func InitRouter() http.Handler {
     methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "DELETE"})
     return handlers.CORS(originsOk, headersOk, methodsOk)(router)
 }
+

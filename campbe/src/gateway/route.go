@@ -1,7 +1,7 @@
 package gateway
 
 import (
-	"campbe/model"
+	"campbe/constants"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,7 +11,7 @@ import (
 	"net/url"
 )
 
-const apiKey = model.MAP_API_KEY
+const apiKey = constants.MAP_API_KEY
 
 // Robot Route
 type DistanceMatrixResponse struct {
@@ -147,7 +147,7 @@ func GetDroneRoute(origin, destination string) (float64, int) {
 
     // Calculate the straight-line distance using the Haversine formula
     distance := haversine(originLat, originLon, destLat, destLon)
-    duration := int (distance / model.DRONE_VELOCITY * 60 + 1)
+    duration := int (distance / constants.DRONE_VELOCITY * 60 + 1)
     fmt.Printf("Distance: %.1f km, Duration: %d mins\n", distance, duration)
     return distance, duration
 }

@@ -1,19 +1,18 @@
 package main
 
 import (
-	// "campbe/handler"
-	"campbe/gateway"
+	"campbe/database"
+	"campbe/handler"
 	"fmt"
 	"log"
-	// "net/http"
+
+	"net/http"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
     fmt.Println("started-service")
-	origin := "New York, NY"
-    destination := "Washington, DC"
-	gateway.GetRobotRoute(origin, destination)
-	gateway.GetDroneRoute(origin, destination)
-    // log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
+	database.InitMysql()
+    log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
 }

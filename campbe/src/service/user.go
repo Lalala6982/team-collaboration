@@ -1,43 +1,44 @@
 package service
 
 import (
+	"database/sql"
 	"fmt"
-	"reflect"
 
+	mysql "campbe/database"
 	"campbe/model"
 )
 
 func CheckUser(username, password string) (bool, error) {
-    query := elastic.NewBoolQuery()
-    query.Must(elastic.NewTermQuery("username", username))
-    query.Must(elastic.NewTermQuery("password", password))
-    searchResult, err := backend.ESBackend.ReadFromES(query, model.USER_INDEX)
+    var dbPassword string
+    query := "SELECT password FROM users WHERE username = ?"
+    err := mysql.Dbsql.QueryRow(query, username).Scan(&dbPassword)
     if err != nil {
+        if err == sql.ErrNoRows{
+            return false, nil
+        }
         return false, err
     }
 
-    var utype model.User
-    for _, item := range searchResult.Each(reflect.TypeOf(utype)) {
-        u := item.(model.User)
-        if u.Password == password {
+    if dbPassword == password {
             fmt.Printf("Login as %s\n", username)
             return true, nil
         }
-    }
     return false, nil
 }
 
 func AddUser(user *model.User) (bool, error) {
-    query := elastic.NewTermQuery("username", user.Username)
-    searchResult, err := backend.ESBackend.ReadFromES(query, constants.USER_INDEX)
+    var exists bool
+    query := "SELECT EXISTS(Select 1 FROM users WHERE username = ?)"
+    err := mysql.Dbsql.QueryRow(query, user.Username).Scan(&exists)
     if err != nil {
         return false, err
     }
-    if searchResult.TotalHits() > 0 {
+    if exists {
         return false, nil
     }
 
-    err = backend.ESBackend.SaveToES(user, constants.USER_INDEX, user.Username)
+    insertQuery := "INSERT INTO users (username, password) VALUES (?,?)"
+    _, err = mysql.Dbsql.Exec(insertQuery, user.Username, user.Password)
     if err != nil {
         return false, err
     }
