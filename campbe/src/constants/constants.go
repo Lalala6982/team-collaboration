@@ -1,12 +1,4 @@
-package model
-
-import (
-	"fmt"
-	"net/http"
-	"net/url"
-	"os"
-	"time"
-)
+package constants
 
 const (
 	ORDER_INDEX    = "order"
