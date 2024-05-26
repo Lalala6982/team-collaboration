@@ -7,16 +7,9 @@ import (
 	"campbe/model"
 	"fmt"
 	"log"
-	"fmt"
-	"log"
 )
 
 type Option struct {
-	baseId         int
-	transportation string
-	distance       float64
-	duration       int
-	price          float64
 	baseId         int
 	transportation string
 	distance       float64
@@ -58,17 +51,7 @@ func GetDispatchingOptions(from, to string) ([3]Option, error) {
 	distance1, duration1 := gateway.GetRobotRoute(from, to)
 	options[0].distance += distance1
 	options[0].duration += duration1
-	// Fastest: drone route
-	options[1].transportation = "drone"
-	options[1].distance = 1e9
-	for index, base := range bases {
-		distance1, duration1 := gateway.GetDroneRoute(base.BaseAddress, from)
-		distance2, _ := gateway.GetDroneRoute(to, base.BaseAddress)
-		if distance1+distance2 < options[1].distance {
-			options[1].baseId = index
-	distance1, duration1 := gateway.GetRobotRoute(from, to)
-	options[0].distance += distance1
-	options[0].duration += duration1
+	
 	// Fastest: drone route
 	options[1].transportation = "drone"
 	options[1].distance = 1e9
@@ -85,11 +68,14 @@ func GetDispatchingOptions(from, to string) ([3]Option, error) {
 	distance1, duration1 = gateway.GetDroneRoute(from, to)
 	options[1].distance += distance1
 	options[1].duration += duration1
+
 	// Cheapest: robot route but share with others
 	options[2].baseId = options[0].baseId
 	options[2].transportation = "robot"
 	options[2].distance = options[0].distance * 2
 	options[2].duration = options[0].duration + 20*60
+
+
 	// return recommended options
 	options[0].price = options[0].distance * constants.ROBOT_CHARGE
 	options[1].price = options[1].distance * constants.DRONE_CHARGE

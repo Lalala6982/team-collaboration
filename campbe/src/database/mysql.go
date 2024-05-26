@@ -1,8 +1,7 @@
 package database
-package database
 
 import (
-	"campbe/model"
+	"campbe/constants"
 	"database/sql"
 	"fmt"
 	"log"
