@@ -27,7 +27,7 @@ CREATE TABLE delivers(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     base_id INT NOT NULL,
     deliver_type VARCHAR(100) NOT NULL,
-    deliver_speed INT NOT NULL,
+    deliver_duration INT NOT NULL,
     deliver_status VARCHAR(100),
     enabled TINYINT NOT NULL DEFAULT 1,
     FOREIGN KEY (base_id) REFERENCES bases(id)
@@ -49,7 +49,7 @@ CREATE TABLE orders(
     to_county VARCHAR(100) NOT NULL,
     to_phone VARCHAR(100),
     to_email VARCHAR(100),
-    total_weight VARCHAR(100) NOT NULL,
+    total_weight DECIMAL(10, 2), NOT NULL,
     status VARCHAR(100),
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     price DECIMAL(10, 2),

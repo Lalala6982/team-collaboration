@@ -20,7 +20,7 @@ type Option struct {
 func GetDispatchingOptions(from, to string) ([3]Option, error) {
 	var options [3]Option
 	// Prepare SQL query
-	query := "SELECT id, base_address, num_of_robots, num_of_drones FROM bases"
+	query := "SELECT id, base_address FROM bases"
 	results, err := database.ReadFromDB(query)
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +29,7 @@ func GetDispatchingOptions(from, to string) ([3]Option, error) {
 	var bases []model.Base
 	for results.Next() {
 		var base model.Base
-		if err := results.Scan(&base.Id, &base.BaseAddress, &base.NumOfRobots, &base.NumOfDrones); err != nil {
+		if err := results.Scan(&base.Id, &base.BaseAddress); err != nil {
 			log.Fatal(err)
 		}
 		bases = append(bases, base)

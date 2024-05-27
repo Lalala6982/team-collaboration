@@ -78,12 +78,6 @@ func ReadFromDB(query string) (*sql.Rows, error) {
 
 func SaveToDB(i interface{}) error {
 	// Prepare SQL statement
-	// query := "INSERT INTO tables () VALUES ()"
-	// Execute the SQL statement
-	// _, err := Dbsql.Exec(query, i.ID, i.Name, i.Email)
-	// if err != nil {
-	// 	return err
-	// }
     v := reflect.ValueOf(i)
     t := reflect.TypeOf(i)
     

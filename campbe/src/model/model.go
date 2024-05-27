@@ -9,19 +9,19 @@ type Order struct {
 	FromCounty  string `json:"from_county"`
 	FromPhone   string `json:"from_phone"`
 	FromEmail   string `json:"from_email"`
-	Consigee    string `json:"consignee"`
+	Consignee   string `json:"consignee"`
 	ToAddress   string `json:"to_address"`
 	ToZipCode   string `json:"to_zip_code"`
 	ToCity      string `json:"to_city"`
 	ToCounty    string `json:"to_county"`
 	ToPhone     string `json:"to_phone"`
 	ToEmail     string `json:"to_email"`
-	TotalWeight string `json:"total_weight"`
+	TotalWeight int    `json:"total_weight"`
 	Status      string `json:"status"`
 	OrderTime   string `json:"order_time"`
 	Price       int    `json:"price"`
-	PriceID     int    `json:"price_id"`
-	DeliverID   int    `json:"deliver_id"`
+	PriceID     string `json:"price_id"`
+	DeliverID   string `json:"deliver_id"`
 }
 
 type User struct {
@@ -38,9 +38,9 @@ type Base struct {
 }
 
 type Deliver struct {
-	Id            int    `json:"id"`
-	BaseId        int    `json:"base_id"`
-	DeliverType   string `json:"deliver_type"`
-	DeliverSpeed  int    `json:"deliver_speed"`
-	DeliverStatus string `json:"deliver_status"`
+	Id              string `json:"id"`
+	BaseId          int    `json:"base_id"`
+	DeliverType     string `json:"deliver_type"`
+	DeliverDuration int    `json:"deliver_duration"`
+	DeliverStatus   string `json:"deliver_status"`
 }
