@@ -14,13 +14,13 @@ func GetOrderHistory(username string) ([]model.Order, error) {
 		return nil, fmt.Errorf("failed to get user: %v", err)
 	}
 
-	if len(user.Index) == 0 {
+	if len(user.History) == 0 {
 		return nil, fmt.Errorf("no orders found for user: %v", username)
 	}
 	// Create a query with the order IDs
 	query := fmt.Sprintf(`SELECT id, shipper, from_address, from_zip_code, from_city, from_county, from_phone, from_email, consigee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, status, order_time, price, price_id, deliver_id 
                           FROM orders 
-                          WHERE id IN ('%s')`, strings.Join(user.Index, "','"))
+                          WHERE id IN ('%s')`, strings.Join(user.History, "','"))
 	rows, err := database.ReadFromDB(query)
 	if err != nil {
 		return nil, fmt.Errorf("query error: %v", err)

@@ -31,20 +31,20 @@ type User struct {
 	ID       int      `jason:"id"`
 	Username string   `json:"username"`
 	Password string   `json:"password"`
-	Index    []string `json:"id"`
+	History  []string `json:"id"`
 }
 
 type Base struct {
 	Id          int    `json:"id"`
 	BaseAddress string `json:"base_address"`
-	NumOfRobots int    `json:"num_of_robots"`
-	NumOfDrones int    `json:"num_of_drones"`
+	BaseCity    string `json:"base_city"`
+	BaseZipCode string `json:"base_zip_code"`
 }
 
 type Deliver struct {
-	Id            int    `json:"id"`
-	BaseId        int    `json:"base_id"`
-	DeliverType   string `json:"deliver_type"`
-	DeliverSpeed  int    `json:"deliver_speed"`
-	DeliverStatus string `json:"deliver_status"`
+	Id              int    `json:"id"`
+	BaseId          int    `json:"base_id"`
+	DeliverType     string `json:"deliver_type"`
+	DeliverDuration int    `json:"deliver_duration"`
+	DeliverStatus   string `json:"deliver_status"`
 }

@@ -31,7 +31,7 @@ var OptionsCache = make(map[string]OptionsStore)
 func GetDispatchingOptions(from, to string) ([]Option, error) {
 	var options []Option
 	// Prepare SQL query
-	query := "SELECT id, base_address, num_of_robots, num_of_drones FROM bases"
+	query := "SELECT id, base_address, base_city, base_zip_code FROM bases"
 	results, err := database.ReadFromDB(query)
 	if err != nil {
 		log.Fatal(err)
@@ -40,7 +40,7 @@ func GetDispatchingOptions(from, to string) ([]Option, error) {
 	var bases []model.Base
 	for results.Next() {
 		var base model.Base
-		if err := results.Scan(&base.Id, &base.BaseAddress, &base.NumOfRobots, &base.NumOfDrones); err != nil {
+		if err := results.Scan(&base.Id, &base.BaseAddress, &base.BaseCity, &base.BaseZipCode); err != nil {
 			log.Fatal(err)
 		}
 		bases = append(bases, base)

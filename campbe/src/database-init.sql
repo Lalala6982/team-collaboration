@@ -1,39 +1,46 @@
+-- Create the database if it does not exist
 CREATE DATABASE IF NOT EXISTS mydb;
+
+-- Use the newly created database
 USE mydb;
 
+-- Drop existing tables if they exist
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS delivers;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS bases;
 
-CREATE TABLE users(
+-- Create the 'users' table with a JSON column
+CREATE TABLE users (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
-    first_name VARCHAR(255),
-    last_name VARCHAR(255),
     password VARCHAR(100) NOT NULL,
-    enabled TINYINT NOT NULL DEFAULT 1
+    enabled TINYINT NOT NULL DEFAULT 1,
+    history JSON -- Renamed the JSON column to history
 );
 
-CREATE TABLE bases(
+-- Create the 'bases' table
+CREATE TABLE bases (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     base_address VARCHAR(255) NOT NULL,
-    num_of_robots INT NOT NULL,
-    num_of_drones INT NOT NULL,
+    base_city VARCHAR(100) NOT NULL,
+    base_zip_code VARCHAR(100) NOT NULL,
     enabled TINYINT NOT NULL DEFAULT 1
 );
 
-CREATE TABLE delivers(
+-- Create the 'delivers' table with a foreign key reference to 'bases'
+CREATE TABLE delivers (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     base_id INT NOT NULL,
     deliver_type VARCHAR(100) NOT NULL,
-    deliver_speed INT NOT NULL,
+    deliver_duration VARCHAR(100),
     deliver_status VARCHAR(100),
     enabled TINYINT NOT NULL DEFAULT 1,
     FOREIGN KEY (base_id) REFERENCES bases(id)
 );
 
-CREATE TABLE orders(
+-- Create the 'orders' table
+CREATE TABLE orders (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     shipper VARCHAR(50) NOT NULL,
     from_address VARCHAR(255) NOT NULL,
@@ -54,16 +61,16 @@ CREATE TABLE orders(
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     price DECIMAL(10, 2),
     price_id INT,
-    deliver_id INT,
-    enabled TINYINT NOT NULL DEFAULT 1,
-    FOREIGN KEY (deliver_id) REFERENCES delivers(id)
+    deliver VARCHAR(100),
+    enabled TINYINT NOT NULL DEFAULT 1
 );
 
--- INSERT INTO bases (base_address, num_of_robots, num_of_drones)
--- VALUES ('New York, USA', 20, 10);
+-- Insert records into the 'bases' table
+INSERT INTO bases (base_address, base_city, base_zip_code)
+VALUES ('153-44 S Conduit Ave', 'Jamaica', '11434');
 
--- INSERT INTO bases (base_address, num_of_robots, num_of_drones)
--- VALUES ('Los Angeles, USA', 20, 10);
+INSERT INTO bases (base_address, base_city, base_zip_code)
+VALUES ('900 Turnbull Canyon Rd', 'City Of Industry', '91745');
 
--- INSERT INTO bases (base_address, num_of_robots, num_of_drones)
--- VALUES ('Chicago, USA', 20, 10);
+INSERT INTO bases (base_address, base_city, base_zip_code)
+VALUES ('1657 N Kostner Ave', 'Chicago', '60639');

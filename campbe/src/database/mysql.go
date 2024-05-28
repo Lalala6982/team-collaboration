@@ -135,9 +135,9 @@ func GetUser(username string) (*model.User, error) {
     }
 
     if index != "" {
-        user.Index = strings.Split(index, ",")
+        user.History = strings.Split(index, ",")
     } else {
-        user.Index = []string{}
+        user.History = []string{}
     }
 
     return &user, nil
