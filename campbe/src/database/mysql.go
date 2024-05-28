@@ -2,6 +2,7 @@ package database
 
 import (
 	"campbe/constants"
+	"campbe/model"
 	"database/sql"
 	"fmt"
 	"log"
@@ -63,14 +64,16 @@ func InitMysql() {
 	fmt.Println("Database initialization successful!")
 }
 
-func ReadFromDB(query string) (*sql.Rows, error) {
+func ReadFromDB(query string,args ...interface{}) (*sql.Rows, error) {
 	// Execute the query, which requires default SQL syntax
-	results, err := Dbsql.Query(query)
+	results, err := Dbsql.Query(query, args...)
 	if err != nil {
-		log.Fatal(err)
+		// log.Fatal(err)
+		return nil, fmt.Errorf("failed to execute query: %v", err)
 	}
 	if err := results.Err(); err != nil {
-		log.Fatal(err)
+		// log.Fatal(err)
+		return nil, fmt.Errorf("error in result set: %v", err)
 	}
 	fmt.Println("Database Read successful!")
 	return results, nil
@@ -115,3 +118,27 @@ func SaveToDB(i interface{}) error {
     return nil
 }
 
+// GetUser retrieves a user by their username
+func GetUser(username string) (*model.User, error) {
+    query := "SELECT id, username, index FROM users WHERE username = ?"
+    row := Dbsql.QueryRow(query, username)
+
+    var user model.User
+    var index string
+
+    err := row.Scan(&user.ID, &user.Username, &index)
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return nil, fmt.Errorf("user not found: %v", username)
+        }
+        return nil, fmt.Errorf("failed to get user: %v", err)
+    }
+
+    if index != "" {
+        user.Index = strings.Split(index, ",")
+    } else {
+        user.Index = []string{}
+    }
+
+    return &user, nil
+}

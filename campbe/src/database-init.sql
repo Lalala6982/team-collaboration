@@ -1,9 +1,9 @@
 CREATE DATABASE IF NOT EXISTS mydb;
 USE mydb;
 
+DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS delivers;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS bases;
 
 CREATE TABLE users(
@@ -18,8 +18,8 @@ CREATE TABLE users(
 CREATE TABLE bases(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     base_address VARCHAR(255) NOT NULL,
-    -- num_of_robots INT NOT NULL,
-    -- num_of_drones INT NOT NULL,
+    num_of_robots INT NOT NULL,
+    num_of_drones INT NOT NULL,
     enabled TINYINT NOT NULL DEFAULT 1
 );
 
@@ -59,11 +59,11 @@ CREATE TABLE orders(
     FOREIGN KEY (deliver_id) REFERENCES delivers(id)
 );
 
-INSERT INTO bases (base_address, num_of_robots, num_of_drones)
-VALUES ('New York, USA', 20, 10);
+-- INSERT INTO bases (base_address, num_of_robots, num_of_drones)
+-- VALUES ('New York, USA', 20, 10);
 
-INSERT INTO bases (base_address, num_of_robots, num_of_drones)
-VALUES ('Los Angeles, USA', 20, 10);
+-- INSERT INTO bases (base_address, num_of_robots, num_of_drones)
+-- VALUES ('Los Angeles, USA', 20, 10);
 
-INSERT INTO bases (base_address, num_of_robots, num_of_drones)
-VALUES ('Chicago, USA', 20, 10);
+-- INSERT INTO bases (base_address, num_of_robots, num_of_drones)
+-- VALUES ('Chicago, USA', 20, 10);

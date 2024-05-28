@@ -13,96 +13,134 @@ import (
 	"github.com/google/uuid"
 )
 
-// user submit order information and create a new entry
-func uploadOrderHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Shipping Info Received")
+type ShippingInfoRequest struct {
+	FromAddress string `json:"from_address"`
+	FromZipCode string `json:"from_zip_code"`
+	FromCity    string `json:"from_city"`
+	ToAddress   string `json:"to_address"`
+	ToZipCode   string `json:"to_zip_code"`
+	ToCity      string `json:"to_city"`
+	TotalWeight int    `json:"total_weight"`
+}
 
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "Unable to parse form", http.StatusBadRequest)
+func getShippingOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	var req ShippingInfoRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	totalWeight, err := strconv.Atoi(r.FormValue("total_weight"))
-    if err != nil {
-        http.Error(w, "Invalid total weight format", http.StatusBadRequest)
-        return
-    }
-
-	price, err := strconv.Atoi(r.FormValue("price"))
-    if err != nil {
-        http.Error(w, "Invalid price format", http.StatusBadRequest)
-        return
-    }
-
-	order := model.Order{
-		Id:          uuid.New().String(),
-        Shipper:     r.FormValue("shipper"),
-        FromAddress: r.FormValue("from_address"),
-        FromZipCode: r.FormValue("from_zip_code"),
-        FromCity:    r.FormValue("from_city"),
-        FromCounty:  r.FormValue("from_county"),
-        FromPhone:   r.FormValue("from_phone"),
-        FromEmail:   r.FormValue("from_email"),
-        Consignee:   r.FormValue("consignee"),
-        ToAddress:   r.FormValue("to_address"),
-        ToZipCode:   r.FormValue("to_zip_code"),
-        ToCity:      r.FormValue("to_city"),
-        ToCounty:    r.FormValue("to_county"),
-        ToPhone:     r.FormValue("to_phone"),
-        ToEmail:     r.FormValue("to_email"),
-        TotalWeight: totalWeight,
-        Status:      r.FormValue("status"),
-        OrderTime:   r.FormValue("order_time"),
-        ProductID:   r.FormValue("product_id"),
-        Price:       price,
-        PriceID:     r.FormValue("price_id"),
-        DeliverID:   r.FormValue("deliver_id"),
-	}
-
-
-	
-
-	// Get recommendation
-	fromFields := fmt.Sprintf("%s, %s, %s", order.FromAddress, order.FromCity, order.FromZipCode)
-    toFields := fmt.Sprintf("%s, %s, %s", order.ToAddress, order.ToCity, order.ToZipCode)
+	// Fetch dispatching options
+	fromFields := fmt.Sprintf("%s, %s, %s", req.FromAddress, req.FromCity, req.FromZipCode)
+	toFields := fmt.Sprintf("%s, %s, %s", req.ToAddress, req.ToCity, req.ToZipCode)
 	options, err := service.GetDispatchingOptions(fromFields, toFields)
 	if err != nil {
 		http.Error(w, "Failed to get dispatching options", http.StatusInternalServerError)
 		return
 	}
 
-	// Print or handle the options
-	fmt.Println(options)
+	// Return the shipping options to the client
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(options)
+}
 
+type CreateOrderRequest struct {
+	FromAddress    string `json:"from_address"`
+	FromZipCode    string `json:"from_zip_code"`
+	FromCity       string `json:"from_city"`
+	ToAddress      string `json:"to_address"`
+	ToZipCode      string `json:"to_zip_code"`
+	ToCity         string `json:"to_city"`
+	TotalWeight    int    `json:"total_weight"`
+	SelectedOption string `json:"selected_option"`
+	OptionsID      string `json:"options_id"`
+	Shipper        string `json:"shipper"`
+	FromCounty     string `json:"from_county"`
+	FromPhone      string `json:"from_phone"`
+	FromEmail      string `json:"from_email"`
+	Consignee      string `json:"consignee"`
+	ToCounty       string `json:"to_county"`
+	ToPhone        string `json:"to_phone"`
+	ToEmail        string `json:"to_email"`
+	Status         string `json:"status"`
+	OrderTime      string `json:"order_time"`
+	ProductID      string `json:"product_id"`
+	Price          float64`json:"price"`
+	PriceID        string `json:"price_id"`
+	Deliver        string `json:"deliver"`
+	Duration       string `json:"duration"`
+	Distance       float64 `json:"distance"`
+}
 
-	// Save the order to the database
+func createOrderHandler(w http.ResponseWriter, r *http.Request) {
+	var req CreateOrderRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	// Retrieve stored options using OptionsID
+	optionsStore, exists := service.OptionsCache[req.OptionsID]
+	if !exists || len(optionsStore.Options) == 0 {
+		http.Error(w, "Invalid or expired options ID", http.StatusBadRequest)
+		return
+	}
+
+	// Find the selected option based on the OptionID
+	var selectedOption service.Option
+	for _, option := range optionsStore.Options {
+		if option.OptionID == req.SelectedOption {
+			selectedOption = option
+			break
+		}
+	}
+
+	if selectedOption.OptionID == "" {
+		http.Error(w, "Invalid selected option", http.StatusBadRequest)
+		return
+	}
+
+	// Create a new order based on the selected option and provided info
+	order := model.Order{
+		Id:             uuid.New().String(),
+		Shipper:        req.Shipper,
+		FromAddress:    req.FromAddress,
+		FromZipCode:    req.FromZipCode,
+		FromCity:       req.FromCity,
+		FromCounty:     req.FromCounty,
+		FromPhone:      req.FromPhone,
+		FromEmail:      req.FromEmail,
+		Consignee:      req.Consignee,
+		ToAddress:      req.ToAddress,
+		ToZipCode:      req.ToZipCode,
+		ToCity:         req.ToCity,
+		ToCounty:       req.ToCounty,
+		ToPhone:        req.ToPhone,
+		ToEmail:        req.ToEmail,
+		TotalWeight:    req.TotalWeight,
+		Status:         req.Status,
+		OrderTime:      req.OrderTime,
+		ProductID:      req.ProductID,
+		Price:          req.Price,
+		PriceID:        req.PriceID,
+		Deliver:        selectedOption.Transportation,
+		Duration:       strconv.Itoa(selectedOption.Duration),
+		Distance:       selectedOption.Distance,
+	}
 	if err := database.SaveToDB(order); err != nil {
 		http.Error(w, "Failed to save order to database", http.StatusInternalServerError)
 		return
 	}
 
 	// Respond to the client
-	fmt.Fprintf(w, "Order saved successfully")
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Order created and saved successfully"))
 }
-
-// provide shipping options based on the order information for users
-// func recommendHandler(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Println("Recieved Recommendation Request")
-	
-
-// }
-
-// user confirm final decision and dispatching centers deal with the shipping
-// func dispatchHandler(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Println("Received Dispatching Request")
-// }
 
 // user payment
 func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received one checkout request")
 	w.Header().Set("Content-Type", "text/plain")
-	orderID := r.FormValue("appID")
+	orderID := r.FormValue("orderID")
 	url, err := service.CheckoutApp(r.Header.Get("Origin"), orderID)
 	if err != nil {
 		fmt.Println("Checkout failed.")
@@ -114,10 +152,10 @@ func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Checkout process started!")
 }
 // track the status of an order
-func trackHandler(w http.ResponseWriter, r *http.Request) {}
+// func trackHandler(w http.ResponseWriter, r *http.Request) {}
 
 func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Received Order History request")
+	fmt.Println("Received order history request")
 	token := r.Context().Value("user").(*jwt.Token)
     claims := token.Claims.(jwt.MapClaims)
     username := claims["username"].(string)
@@ -148,3 +186,22 @@ func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 	
  }
+
+
+// searchOrderHandler handles the request to search for an order by ID
+func searchOrderHandler(w http.ResponseWriter, r *http.Request) {
+	orderID := r.URL.Query().Get("order_id")
+	if orderID == "" {
+		http.Error(w, "order_id is required", http.StatusBadRequest)
+		return
+	}
+
+	order, err := service.SearchOrderByID(orderID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(order)
+}
