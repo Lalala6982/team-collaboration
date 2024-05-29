@@ -33,35 +33,39 @@ func getShippingOptionsHandler(w http.ResponseWriter, r *http.Request) {
 	// Fetch dispatching options
 	fromFields := fmt.Sprintf("%s, %s, %s", req.FromAddress, req.FromCity, req.FromZipCode)
 	toFields := fmt.Sprintf("%s, %s, %s", req.ToAddress, req.ToCity, req.ToZipCode)
-	options, err := service.GetDispatchingOptions(fromFields, toFields)
+	options, optionsID, err := service.GetDispatchingOptions(fromFields, toFields)
 	if err != nil {
 		http.Error(w, "Failed to get dispatching options", http.StatusInternalServerError)
 		return
 	}
 
 	// Return the shipping options to the client
+	response := map[string]interface{}{
+		"options":    options,
+		"options_id": optionsID,
+	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(options)
+	json.NewEncoder(w).Encode(response)
 }
 
 type CreateOrderRequest struct {
+	Shipper        string `json:"shipper"`
 	FromAddress    string `json:"from_address"`
 	FromZipCode    string `json:"from_zip_code"`
 	FromCity       string `json:"from_city"`
-	ToAddress      string `json:"to_address"`
-	ToZipCode      string `json:"to_zip_code"`
-	ToCity         string `json:"to_city"`
-	TotalWeight    int    `json:"total_weight"`
-	SelectedOption string `json:"selected_option"`
-	OptionsID      string `json:"options_id"`
-	Shipper        string `json:"shipper"`
 	FromCounty     string `json:"from_county"`
 	FromPhone      string `json:"from_phone"`
 	FromEmail      string `json:"from_email"`
 	Consignee      string `json:"consignee"`
+	ToAddress      string `json:"to_address"`
+	ToZipCode      string `json:"to_zip_code"`
+	ToCity         string `json:"to_city"`	
 	ToCounty       string `json:"to_county"`
 	ToPhone        string `json:"to_phone"`
 	ToEmail        string `json:"to_email"`
+	TotalWeight    int    `json:"total_weight"`
+	SelectedOption string `json:"selected_option"`
+	OptionsID      string `json:"options_id"`
 	Status         string `json:"status"`
 	OrderTime      string `json:"order_time"`
 	ProductID      string `json:"product_id"`
@@ -75,7 +79,7 @@ type CreateOrderRequest struct {
 func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 	var req CreateOrderRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
 	// Retrieve stored options using OptionsID

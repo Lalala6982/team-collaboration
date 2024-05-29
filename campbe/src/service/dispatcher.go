@@ -19,6 +19,7 @@ type Option struct {
 	Distance       float64 `json:"distance"`
 	Duration       int     `json:"duration"`
 	Price          float64 `json:"price"`
+
 }
 
 type OptionsStore struct {
@@ -28,7 +29,7 @@ type OptionsStore struct {
 
 var OptionsCache = make(map[string]OptionsStore)
 
-func GetDispatchingOptions(from, to string) ([]Option, error) {
+func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 	var options []Option
 	// Prepare SQL query
 	query := "SELECT id, base_address, base_city, base_zip_code FROM bases"
@@ -55,11 +56,11 @@ func GetDispatchingOptions(from, to string) ([]Option, error) {
 	for _, base := range bases {
 		distance1, duration1, err := gateway.GetRobotRoute(base.BaseAddress, from)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get robot route: %v", err)
+			return nil, "", fmt.Errorf("failed to get robot route: %v", err)
 		}
 		distance2, _, err := gateway.GetRobotRoute(to, base.BaseAddress)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get robot route: %v", err)
+			return nil, "", fmt.Errorf("failed to get robot route: %v", err)
 		}
 		totalDistance := distance1 + distance2
 		if totalDistance < recommendedOption.Distance {
@@ -70,7 +71,7 @@ func GetDispatchingOptions(from, to string) ([]Option, error) {
 	}
 	distance1, duration1, err := gateway.GetRobotRoute(from, to)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get robot route: %v", err)
+		return nil, "", fmt.Errorf("failed to get robot route: %v", err)
 	}
 	recommendedOption.Distance += distance1
 	recommendedOption.Duration += duration1
@@ -86,11 +87,11 @@ func GetDispatchingOptions(from, to string) ([]Option, error) {
 	for _, base := range bases {
 		distance1, duration1, err := gateway.GetDroneRoute(base.BaseAddress, from)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get drone route: %v", err)
+			return nil, "", fmt.Errorf("failed to get drone route: %v", err)
 		}
 		distance2, _, err := gateway.GetDroneRoute(to, base.BaseAddress)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get drone route: %v", err)
+			return nil, "", fmt.Errorf("failed to get drone route: %v", err)
 		}
 		totalDistance := distance1 + distance2
 		if totalDistance < fastestOption.Distance {
@@ -101,7 +102,7 @@ func GetDispatchingOptions(from, to string) ([]Option, error) {
 	}
 	distance1, duration1, err = gateway.GetDroneRoute(from, to)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get drone route: %v", err)
+		return nil, "", fmt.Errorf("failed to get drone route: %v", err)
 	}
 	fastestOption.Distance += distance1
 	fastestOption.Duration += duration1
@@ -126,7 +127,7 @@ func GetDispatchingOptions(from, to string) ([]Option, error) {
 		Timestamp: time.Now(),
 	}
 
-	return options, nil
+	return options, optionsID, nil
 }
 
 
