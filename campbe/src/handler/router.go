@@ -18,11 +18,12 @@ func InitRouter() http.Handler {
 	})
 
     router := mux.NewRouter()
-    router.Handle("/upload", http.HandlerFunc(uploadOrderHandler)).Methods("POST")
-    // router.Handle("/recommend", http.HandlerFunc(recommendHandler)).Methods("GET")
+    router.Handle("/recommend", http.HandlerFunc(getShippingOptionsHandler)).Methods("GET")
+    router.Handle("/upload", http.HandlerFunc(createOrderHandler)).Methods("POST")
+	router.Handle("/search", http.HandlerFunc(searchOrderHandler)).Methods("GET")
     router.Handle("/orderhistory", jwtMiddleware.Handler(http.HandlerFunc(orderHistoryHandler))).Methods("GET")
     router.Handle("/checkout", http.HandlerFunc(checkoutHandler)).Methods("POST")
-    router.Handle("/track", http.HandlerFunc(trackHandler)).Methods("GET")
+    // router.Handle("/track", http.HandlerFunc(trackHandler)).Methods("GET")
     router.Handle("/signup", http.HandlerFunc(signupHandler)).Methods("POST")
     router.Handle("/signin", http.HandlerFunc(signinHandler)).Methods("POST")
 

@@ -2,7 +2,7 @@ package service
 
 import (
 	"campbe/database"
-	"campbe/gateway"
+	stripe "campbe/gateway"
 	"campbe/model"
 	"errors"
 	"fmt"
@@ -17,13 +17,13 @@ func GetOrderHistory(username string) ([]model.Order, error) {
 		return nil, fmt.Errorf("failed to get user: %v", err)
 	}
 
-	if len(user.Index) == 0 {
+	if len(user.History) == 0 {
 		return nil, fmt.Errorf("no orders found for user: %v", username)
 	}
 	// Create a query with the order IDs
 	query := fmt.Sprintf(`SELECT id, shipper, from_address, from_zip_code, from_city, from_county, from_phone, from_email, consigee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, status, order_time, price, price_id, deliver_id 
                           FROM orders 
-                          WHERE id IN ('%s')`, strings.Join(model.user.Index, "','"))
+                          WHERE id IN ('%s')`, strings.Join(user.History, "','"))
 	rows, err := database.ReadFromDB(query)
 	if err != nil {
 		return nil, fmt.Errorf("query error: %v", err)
@@ -35,9 +35,8 @@ func GetOrderHistory(username string) ([]model.Order, error) {
 		var order model.Order
 		err := rows.Scan(
 			&order.Id, &order.Shipper, &order.FromAddress, &order.FromZipCode, &order.FromCity, &order.FromCounty,
-			&order.FromPhone, &order.FromEmail, &order.Consigee, &order.ToAddress, &order.ToZipCode, &order.ToCity,
-			&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight, &order.Status, &order.OrderTime,
-			&order.Price, &order.PriceID, &order.DeliverID,
+			&order.FromPhone, &order.FromEmail, &order.Consignee, &order.ToAddress, &order.ToZipCode, &order.ToCity,
+			&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("scan error: %v", err)
@@ -51,39 +50,41 @@ func GetOrderHistory(username string) ([]model.Order, error) {
 	return orders, nil
 }
 
-func SaveOption(option Option, order *model.Order) (model.Deliver, error) {
-	deliver := model.Deliver{
-		Id:              uuid.New().String(),
-		BaseId:          option.baseId,
-		DeliverType:     option.transportation,
-		DeliverDuration: option.duration,
-		DeliverStatus:   "Pending",
-	}
-	query := "INSERT INTO delivers (base_id, deliver_type, deliver_duration, deliver_status) VALUES (?, ?, ?, ?)"
-	if _, err := database.Dbsql.Exec(query, deliver.BaseId, deliver.DeliverType, deliver.DeliverDuration, deliver.DeliverStatus); err != nil {
-		panic(err)
-	}
+func SearchOrderByID(orderID string) (*model.Order, error) {
+	query := `SELECT id, shipper, from_address, from_zip_code, from_city, from_county, from_phone, from_email, 
+		consignee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, status, 
+		order_time, product_id, price, price_id, deliver_id, duration, distance 
+		FROM orders WHERE id = ?`
+		rows, err := database.ReadFromDB(query, orderID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch order: %v", err)
+		}
+		defer rows.Close()
+	
+		var order model.Order
+		if rows.Next() {
+			err := rows.Scan(
+				&order.Id, &order.Shipper, &order.FromAddress, &order.FromZipCode, &order.FromCity, &order.FromCounty,
+				&order.FromPhone, &order.FromEmail, &order.Consignee, &order.ToAddress, &order.ToZipCode, &order.ToCity,
+				&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight, &order.Status, &order.OrderTime,
+				&order.ProductID, &order.Price, &order.PriceID, &order.Deliver, &order.Duration, &order.Distance,
+				)
+				if err != nil {
+					return nil, fmt.Errorf("failed to scan order: %v", err)
+				}
+			} else {
+				return nil, fmt.Errorf("order not found: %v", orderID)
+			}
+		
+			return &order, nil
+		}
 
-	order.DeliverID = deliver.Id
-	order.Price = int(option.price)
-	_, priceID, err := gateway.CreateOrderWithPrice(order.Id, int64(order.Price*100))
+func CheckoutApp(domain string, orderID string) (string, error) {
+	order, err := SearchOrderByID(orderID)
 	if err != nil {
-		panic(err)
+		return "", fmt.Errorf("failed to retrieve order: %v", err)
 	}
-	// order.ProductID = productID
-	order.PriceID = priceID
 
-	return deliver, nil
-}
-
-// func CheckoutApp(domain string, orderID string) (string, error) {
-func CheckoutApp(domain string, order *model.Order) (string, error) {
-	// order, err := ReadFromDB(orderID)
-	// if err != nil {
-	// 	return "", err
-	// }
-	if order == nil {
-		return "", errors.New("unable to find order in database")
-	}
-	return gateway.CreateCheckoutSession(domain, order.PriceID)
+	//2. call stripe to checkout using Price ID
+	return stripe.CreateCheckoutSession(domain, order.PriceID)
 }

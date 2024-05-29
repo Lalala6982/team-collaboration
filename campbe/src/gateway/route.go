@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"math"
 	"net/http"
 	"net/url"
@@ -60,24 +59,26 @@ func getDistanceMatrix(origin, destination string) (*DistanceMatrixResponse, err
 
 	return &distanceMatrixResponse, nil
 }
-func GetRobotRoute(origin, destination string) (float64, int) {
+func GetRobotRoute(origin, destination string) (float64, int, error) {
 	response, err := getDistanceMatrix(origin, destination)
 	if err != nil {
-		log.Fatalf("Failed to get distance matrix: %v", err)
+		// log.Fatalf("Failed to get distance matrix: %v", err)
+		return 0.0, 0, fmt.Errorf("failed to get distance matrix: %v", err)
 	}
 	if response.Status != "OK" {
-		log.Fatalf("Error in response: %s", response.Status)
+		// log.Fatalf("Error in response: %s", response.Status)
+		return 0.0, 0, fmt.Errorf("error in response: %s", response.Status)
 	}
 
 	if len(response.Rows) <= 0 || len(response.Rows[0].Elements) <= 0 || response.Rows[0].Elements[0].Status != "OK" {
 		fmt.Printf("Error in response")
-		return 0.0, 0
+		return 0.0, 0, fmt.Errorf("invalid response data")
 	}
 
 	distance := float64(response.Rows[0].Elements[0].Distance.Value) / 1000
 	duration := response.Rows[0].Elements[0].Distance.Value/60 + 1
 	fmt.Printf("Distance: %.1f km, Duration: %d mins\n", distance, duration)
-	return distance, duration
+	return distance, duration, nil
 }
 
 // Drone Route
@@ -135,21 +136,23 @@ func haversine(lat1, lon1, lat2, lon2 float64) float64 {
 	distance := R * c // Distance in km
 	return distance
 }
-func GetDroneRoute(origin, destination string) (float64, int) {
+func GetDroneRoute(origin, destination string) (float64, int, error) {
 	// Get coordinates for origin
 	originLat, originLon, err := getCoordinates(origin)
 	if err != nil {
-		log.Fatalf("Failed to get coordinates for origin: %v", err)
+		// log.Fatalf("Failed to get coordinates for origin: %v", err)
+		return 0.0, 0, fmt.Errorf("failed to get coordinates for origin: %v", err)
 	}
 	// Get coordinates for destination
 	destLat, destLon, err := getCoordinates(destination)
 	if err != nil {
-		log.Fatalf("Failed to get coordinates for destination: %v", err)
+		// log.Fatalf("Failed to get coordinates for destination: %v", err)
+		return 0.0, 0, fmt.Errorf("failed to get coordinates for destination: %v", err)
 	}
 
     // Calculate the straight-line distance using the Haversine formula
     distance := haversine(originLat, originLon, destLat, destLon)
     duration := int (distance / constants.DRONE_VELOCITY * 60 + 1)
     fmt.Printf("Distance: %.1f km, Duration: %d mins\n", distance, duration)
-    return distance, duration
+    return distance, duration,nil
 }
