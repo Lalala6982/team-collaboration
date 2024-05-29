@@ -8,23 +8,14 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	jwt "github.com/form3tech-oss/jwt-go"
 	"github.com/google/uuid"
 )
 
-type ShippingInfoRequest struct {
-	FromAddress string `json:"from_address"`
-	FromZipCode string `json:"from_zip_code"`
-	FromCity    string `json:"from_city"`
-	ToAddress   string `json:"to_address"`
-	ToZipCode   string `json:"to_zip_code"`
-	ToCity      string `json:"to_city"`
-	TotalWeight int    `json:"total_weight"`
-}
-
 func getShippingOptionsHandler(w http.ResponseWriter, r *http.Request) {
-	var req ShippingInfoRequest
+	var req model.ShippingInfoRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
@@ -48,36 +39,8 @@ func getShippingOptionsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-type CreateOrderRequest struct {
-	Shipper        string `json:"shipper"`
-	FromAddress    string `json:"from_address"`
-	FromZipCode    string `json:"from_zip_code"`
-	FromCity       string `json:"from_city"`
-	FromCounty     string `json:"from_county"`
-	FromPhone      string `json:"from_phone"`
-	FromEmail      string `json:"from_email"`
-	Consignee      string `json:"consignee"`
-	ToAddress      string `json:"to_address"`
-	ToZipCode      string `json:"to_zip_code"`
-	ToCity         string `json:"to_city"`	
-	ToCounty       string `json:"to_county"`
-	ToPhone        string `json:"to_phone"`
-	ToEmail        string `json:"to_email"`
-	TotalWeight    int    `json:"total_weight"`
-	SelectedOption string `json:"selected_option"`
-	OptionsID      string `json:"options_id"`
-	Status         string `json:"status"`
-	OrderTime      string `json:"order_time"`
-	ProductID      string `json:"product_id"`
-	Price          float64`json:"price"`
-	PriceID        string `json:"price_id"`
-	Deliver        string `json:"deliver"`
-	Duration       string `json:"duration"`
-	Distance       float64 `json:"distance"`
-}
-
 func createOrderHandler(w http.ResponseWriter, r *http.Request) {
-	var req CreateOrderRequest
+	var req model.CreateOrderRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
@@ -104,8 +67,15 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create a new order based on the selected option and provided info
+	orderID := uuid.New().String()
+	orderTime, err := time.Parse(time.RFC3339, req.OrderTime)
+	if err != nil {
+		http.Error(w, "Invalid order time format", http.StatusBadRequest)
+		return
+	}
+
 	order := model.Order{
-		Id:             uuid.New().String(),
+		Id:             orderID,
 		Shipper:        req.Shipper,
 		FromAddress:    req.FromAddress,
 		FromZipCode:    req.FromZipCode,
@@ -121,8 +91,9 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 		ToPhone:        req.ToPhone,
 		ToEmail:        req.ToEmail,
 		TotalWeight:    req.TotalWeight,
+		UserID:         req.UserID,
 		Status:         req.Status,
-		OrderTime:      req.OrderTime,
+		OrderTime:      orderTime.Format("2006-01-02 15:04:05"),
 		ProductID:      req.ProductID,
 		Price:          req.Price,
 		PriceID:        req.PriceID,
@@ -130,10 +101,14 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 		Duration:       strconv.Itoa(selectedOption.Duration),
 		Distance:       selectedOption.Distance,
 	}
-	if err := database.SaveToDB(order); err != nil {
-		http.Error(w, "Failed to save order to database", http.StatusInternalServerError)
+
+	
+	if err := database.SaveOrderToDB(order); err != nil {
+		http.Error(w, "Failed to save order to database: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	
 
 	// Respond to the client
 	w.WriteHeader(http.StatusCreated)
@@ -144,7 +119,6 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received one checkout request")
 	w.Header().Set("Content-Type", "text/plain")
-	orderID := r.FormValue("orderID")
 	orderID := r.FormValue("orderID")
 	url, err := service.CheckoutApp(r.Header.Get("Origin"), orderID)
 	if err != nil {
@@ -164,7 +138,7 @@ func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received order history request")
 	token := r.Context().Value("user").(*jwt.Token)
 	claims := token.Claims.(jwt.MapClaims)
-	username := claims["username"].(string)
+	userID := claims["user_id"].(string)
 
 	//1. process request: URL param -> string
 	w.Header().Set("Content-Type", "application/json")
@@ -174,7 +148,7 @@ func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	// deliverID := r.URL.Query().Get("deliver_id")
 
 	// Fetch orders from service user
-	orders, err := service.GetOrderHistory(username)
+	orders, err := service.GetOrderHistory(userID)
 	if err != nil {
 		http.Error(w, "Failed to read orders from backend", http.StatusInternalServerError)
 		return

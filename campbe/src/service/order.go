@@ -4,27 +4,14 @@ import (
 	"campbe/database"
 	stripe "campbe/gateway"
 	"campbe/model"
-	"errors"
 	"fmt"
-	"strings"
-
-	"github.com/google/uuid"
 )
 
-func GetOrderHistory(username string) ([]model.Order, error) {
-	user, err := database.GetUser(username)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user: %v", err)
-	}
-
-	if len(user.History) == 0 {
-		return nil, fmt.Errorf("no orders found for user: %v", username)
-	}
-	// Create a query with the order IDs
-	query := fmt.Sprintf(`SELECT id, shipper, from_address, from_zip_code, from_city, from_county, from_phone, from_email, consigee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, status, order_time, price, price_id, deliver_id 
-                          FROM orders 
-                          WHERE id IN ('%s')`, strings.Join(user.History, "','"))
-	rows, err := database.ReadFromDB(query)
+func GetOrderHistory(userID string) ([]model.Order, error) {
+	// Create a query with the user IDs
+	query := `SELECT id, shipper, from_address, from_zip_code, from_city, from_county, from_phone, from_email, consignee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, user_id, status, 
+	order_time, product_id, price, price_id, deliver, duration, distance FROM orders WHERE user_id = ?`
+	rows, err := database.ReadFromDB(query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("query error: %v", err)
 	}
@@ -36,7 +23,7 @@ func GetOrderHistory(username string) ([]model.Order, error) {
 		err := rows.Scan(
 			&order.Id, &order.Shipper, &order.FromAddress, &order.FromZipCode, &order.FromCity, &order.FromCounty,
 			&order.FromPhone, &order.FromEmail, &order.Consignee, &order.ToAddress, &order.ToZipCode, &order.ToCity,
-			&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight,
+			&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight, &order.Status, &order.OrderTime, &order.Price, &order.Deliver, &order.Duration, &order.Distance,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("scan error: %v", err)
@@ -52,8 +39,8 @@ func GetOrderHistory(username string) ([]model.Order, error) {
 
 func SearchOrderByID(orderID string) (*model.Order, error) {
 	query := `SELECT id, shipper, from_address, from_zip_code, from_city, from_county, from_phone, from_email, 
-		consignee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, status, 
-		order_time, product_id, price, price_id, deliver_id, duration, distance 
+		consignee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, user_id, status, 
+		order_time, product_id, price, price_id, deliver, duration, distance 
 		FROM orders WHERE id = ?`
 		rows, err := database.ReadFromDB(query, orderID)
 		if err != nil {
@@ -66,7 +53,7 @@ func SearchOrderByID(orderID string) (*model.Order, error) {
 			err := rows.Scan(
 				&order.Id, &order.Shipper, &order.FromAddress, &order.FromZipCode, &order.FromCity, &order.FromCounty,
 				&order.FromPhone, &order.FromEmail, &order.Consignee, &order.ToAddress, &order.ToZipCode, &order.ToCity,
-				&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight, &order.Status, &order.OrderTime,
+				&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight, &order.UserID, &order.Status, &order.OrderTime,
 				&order.ProductID, &order.Price, &order.PriceID, &order.Deliver, &order.Duration, &order.Distance,
 				)
 				if err != nil {
@@ -88,3 +75,4 @@ func CheckoutApp(domain string, orderID string) (string, error) {
 	//2. call stripe to checkout using Price ID
 	return stripe.CreateCheckoutSession(domain, order.PriceID)
 }
+
