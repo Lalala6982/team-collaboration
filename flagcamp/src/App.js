@@ -22,8 +22,8 @@ const App = () => {
   const [activeKey, setActiveTabKey] = useState("1");
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    setAuthed(!token);
+    const authToken = localStorage.getItem("authToken");
+    setAuthed(!authToken);
   }, []);
 
   const handleLogOut = () => {

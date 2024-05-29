@@ -1,25 +1,27 @@
-import { Button, Form, Modal, Input, message } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useState } from "react";
 import { UserOutlined } from "@ant-design/icons";
-//import { register } from "../utils";
+import { register } from "../utils";
+import { ShowSignup } from "../App"
 
 const SignupButton = () => {
   const [modalVisible, setModalVisible] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const handleRegisterOnClick = () => {
     setModalVisible(true);
   };
-    
-  const handleRegisterCancel = () => { 
-      setModalVisible(false);
-  }
+
+  const handleRegisterCancel = () => {
+    setShowSignup(false);
+  };
 
   const handleFormSubmit = async (data) => {
     setLoading(true);
 
     try {
-      //  await register(data);
+      await register(data);
       message.success("Sign up successfully!");
       setModalVisible(false);
     } catch (error) {
@@ -28,9 +30,9 @@ const SignupButton = () => {
       setLoading(false);
     }
   };
-    
+
   return (
-    <div>
+    <>
       <Form onFinish={handleFormSubmit}>
         <Form.Item
           name="username"
@@ -50,7 +52,7 @@ const SignupButton = () => {
             },
           ]}
         >
-          <Input
+          <Input.Password
             disabled={loading}
             prefix={<UserOutlined />}
             placeholder="Password"
@@ -68,7 +70,7 @@ const SignupButton = () => {
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </>
   );
 };
 export default SignupButton;
