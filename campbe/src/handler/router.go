@@ -32,4 +32,3 @@ func InitRouter() http.Handler {
 	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "DELETE"})
 	return handlers.CORS(originsOk, headersOk, methodsOk)(router)
 }
-

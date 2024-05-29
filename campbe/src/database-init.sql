@@ -56,7 +56,7 @@ CREATE TABLE orders (
     to_county VARCHAR(100) NOT NULL,
     to_phone VARCHAR(100),
     to_email VARCHAR(100),
-    total_weight VARCHAR(100) NOT NULL,
+    total_weight DECIMAL(10, 2), NOT NULL,
     status VARCHAR(100),
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     price DECIMAL(10, 2),

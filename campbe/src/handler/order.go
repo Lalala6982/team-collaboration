@@ -145,6 +145,7 @@ func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received one checkout request")
 	w.Header().Set("Content-Type", "text/plain")
 	orderID := r.FormValue("orderID")
+	orderID := r.FormValue("orderID")
 	url, err := service.CheckoutApp(r.Header.Get("Origin"), orderID)
 	if err != nil {
 		fmt.Println("Checkout failed.")
@@ -155,18 +156,19 @@ func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(url))
 	fmt.Println("Checkout process started!")
 }
+
 // track the status of an order
 // func trackHandler(w http.ResponseWriter, r *http.Request) {}
 
 func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received order history request")
 	token := r.Context().Value("user").(*jwt.Token)
-    claims := token.Claims.(jwt.MapClaims)
-    username := claims["username"].(string)
+	claims := token.Claims.(jwt.MapClaims)
+	username := claims["username"].(string)
 
-    //1. process request: URL param -> string
+	//1. process request: URL param -> string
 	w.Header().Set("Content-Type", "application/json")
-    // status := r.URL.Query().Get("status")
+	// status := r.URL.Query().Get("status")
 	// price := r.URL.Query().Get("price")
 	// orderTime := r.URL.Query().Get("order_time")
 	// deliverID := r.URL.Query().Get("deliver_id")

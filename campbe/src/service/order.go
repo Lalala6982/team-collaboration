@@ -4,8 +4,11 @@ import (
 	"campbe/database"
 	stripe "campbe/gateway"
 	"campbe/model"
+	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 func GetOrderHistory(username string) ([]model.Order, error) {
@@ -28,7 +31,6 @@ func GetOrderHistory(username string) ([]model.Order, error) {
 	defer rows.Close()
 
 	var orders []model.Order
-
 	for rows.Next() {
 		var order model.Order
 		err := rows.Scan(
@@ -45,7 +47,6 @@ func GetOrderHistory(username string) ([]model.Order, error) {
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("rows error: %v", err)
 	}
-
 	return orders, nil
 }
 
