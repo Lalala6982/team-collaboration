@@ -15,8 +15,7 @@ CREATE TABLE users (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    enabled TINYINT NOT NULL DEFAULT 1,
-    history JSON -- Renamed the JSON column to history
+    enabled TINYINT NOT NULL DEFAULT 1
 );
 
 -- Create the 'bases' table
@@ -41,7 +40,7 @@ CREATE TABLE delivers (
 
 -- Create the 'orders' table
 CREATE TABLE orders (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
     shipper VARCHAR(50) NOT NULL,
     from_address VARCHAR(255) NOT NULL,
     from_zip_code VARCHAR(100) NOT NULL,
@@ -56,13 +55,18 @@ CREATE TABLE orders (
     to_county VARCHAR(100) NOT NULL,
     to_phone VARCHAR(100),
     to_email VARCHAR(100),
-    total_weight DECIMAL(10, 2), NOT NULL,
+    total_weight INT NOT NULL,
+    user_id INT,
     status VARCHAR(100),
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    product_id VARCHAR(255),
     price DECIMAL(10, 2),
-    price_id INT,
+    price_id VARCHAR(100),
     deliver VARCHAR(100),
+    duration VARCHAR(100),
+    distance DECIMAL(10,2),
     enabled TINYINT NOT NULL DEFAULT 1
+
 );
 
 -- Insert records into the 'bases' table
