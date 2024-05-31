@@ -35,7 +35,6 @@ func CreateOrderWithPrice(orderID string, orderPrice int64) (productID, priceID 
 
 	fmt.Println("Success! Here is your order id: " + newOrder.ID)
 	fmt.Println("Success! Here is your price id: " + newPrice.ID)
-
 	return newOrder.ID, newPrice.ID, nil
 }
 
@@ -43,7 +42,7 @@ func CreateCheckoutSession(domain string, priceID string) (string, error) {
 	stripe.Key = constants.STRIPE_API_KEY
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
-		   {
+			{
 				Price:    &priceID,
 				Quantity: stripe.Int64(1),
 			},
@@ -54,7 +53,6 @@ func CreateCheckoutSession(domain string, priceID string) (string, error) {
 	}
 
 	s, err := session.New(params)
-
 	if err != nil {
 		fmt.Printf("session.New: %v", err)
 		return "", err

@@ -43,27 +43,27 @@ func getShippingOptionsHandler(w http.ResponseWriter, r *http.Request) {
 func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 	token, ok := r.Context().Value("user").(*jwt.Token)
 	if !ok {
-    // Handle the error, maybe the token is not present in the context
+		// Handle the error, maybe the token is not present in the context
 		fmt.Println("Token not found in context or is not of type *jwt.Token")
-    	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-    	return
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-    	// Handle the error, maybe the claims are not of type jwt.MapClaims
+		// Handle the error, maybe the claims are not of type jwt.MapClaims
 		fmt.Println("Claims not of type jwt.MapClaims")
-    	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-    	return
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
 	fmt.Println("Claims:", claims)
 
 	userName, ok := claims["username"].(string) // Assuming the "id" is stored as a number
 	if !ok {
-    	// Handle the error, maybe the user_id is not present or not a float64
+		// Handle the error, maybe the user_id is not present or not a float64
 		fmt.Println("User Name not found in claims")
-    	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-    	return
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
 
 	var req model.CreateOrderRequest
@@ -94,30 +94,29 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Create a new order based on the selected option and provided info
 	order := model.Order{
-		Id:             uuid.New().String(),
-		Shipper:        req.Shipper,
-		FromAddress:    req.FromAddress,
-		FromZipCode:    req.FromZipCode,
-		FromCity:       req.FromCity,
-		FromCounty:     req.FromCounty,
-		FromPhone:      req.FromPhone,
-		FromEmail:      req.FromEmail,
-		Consignee:      req.Consignee,
-		ToAddress:      req.ToAddress,
-		ToZipCode:      req.ToZipCode,
-		ToCity:         req.ToCity,
-		ToCounty:       req.ToCounty,
-		ToPhone:        req.ToPhone,
-		ToEmail:        req.ToEmail,
-		TotalWeight:    req.TotalWeight,
-		Status:         "Pending",
-		OrderTime:      time.Now().Format("2006-01-02 15:04:05"),
-		Price:          selectedOption.Price,
-		Deliver:        selectedOption.Transportation,
-		Duration:       strconv.Itoa(selectedOption.Duration),
-		Distance:       selectedOption.Distance,
+		Id:          uuid.New().String(),
+		Shipper:     req.Shipper,
+		FromAddress: req.FromAddress,
+		FromZipCode: req.FromZipCode,
+		FromCity:    req.FromCity,
+		FromCounty:  req.FromCounty,
+		FromPhone:   req.FromPhone,
+		FromEmail:   req.FromEmail,
+		Consignee:   req.Consignee,
+		ToAddress:   req.ToAddress,
+		ToZipCode:   req.ToZipCode,
+		ToCity:      req.ToCity,
+		ToCounty:    req.ToCounty,
+		ToPhone:     req.ToPhone,
+		ToEmail:     req.ToEmail,
+		TotalWeight: req.TotalWeight,
+		Status:      "Pending",
+		OrderTime:   time.Now().Format("2006-01-02 15:04:05"),
+		Price:       selectedOption.Price,
+		Deliver:     selectedOption.Transportation,
+		Duration:    strconv.Itoa(selectedOption.Duration),
+		Distance:    selectedOption.Distance,
 	}
-
 
 	productID, priceID, err := gateway.CreateOrderWithPrice(order.Id, int64(order.Price*100))
 	if err != nil {
@@ -153,42 +152,35 @@ func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Checkout process started!")
 }
 
-// track the status of an order
-// func trackHandler(w http.ResponseWriter, r *http.Request) {}
-
 func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received order history request")
 	token, ok := r.Context().Value("user").(*jwt.Token)
 	if !ok {
-    // Handle the error, maybe the token is not present in the context
+		// Handle the error, maybe the token is not present in the context
 		fmt.Println("Token not found in context or is not of type *jwt.Token")
-    	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-    	return
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-    	// Handle the error, maybe the claims are not of type jwt.MapClaims
+		// Handle the error, maybe the claims are not of type jwt.MapClaims
 		fmt.Println("Claims not of type jwt.MapClaims")
-    	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-    	return
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
 	fmt.Println("Claims:", claims)
 
 	userName, ok := claims["username"].(string) // Assuming the "id" is stored as a number
 	if !ok {
-    	// Handle the error, maybe the user_id is not present or not a float64
+		// Handle the error, maybe the user_id is not present or not a float64
 		fmt.Println("User Name not found in claims")
-    	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-    	return
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
 
 	//1. process request: URL param -> string
 	w.Header().Set("Content-Type", "application/json")
-	// status := r.URL.Query().Get("status")
-	// price := r.URL.Query().Get("price")
-	// orderTime := r.URL.Query().Get("order_time")
-	// deliverID := r.URL.Query().Get("deliver_id")
 
 	// Fetch orders from service user
 	orders, err := service.GetOrderHistory(userName)
@@ -229,3 +221,6 @@ func searchOrderHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(order)
 }
+
+// track the status of an order
+// func trackHandler(w http.ResponseWriter, r *http.Request) {}

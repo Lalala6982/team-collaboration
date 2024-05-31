@@ -50,29 +50,29 @@ func SearchOrderByID(orderID string) (*model.Order, error) {
 		consignee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, user_name, status, 
 		order_time, product_id, price, price_id, deliver, duration, distance 
 		FROM orders WHERE id = ?`
-		rows, err := database.ReadFromDB(query, orderID)
+	rows, err := database.ReadFromDB(query, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch order: %v", err)
+	}
+	defer rows.Close()
+
+	var order model.Order
+	if rows.Next() {
+		err := rows.Scan(
+			&order.Id, &order.Shipper, &order.FromAddress, &order.FromZipCode, &order.FromCity, &order.FromCounty,
+			&order.FromPhone, &order.FromEmail, &order.Consignee, &order.ToAddress, &order.ToZipCode, &order.ToCity,
+			&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight, &order.UserName, &order.Status, &order.OrderTime,
+			&order.ProductID, &order.Price, &order.PriceID, &order.Deliver, &order.Duration, &order.Distance,
+		)
 		if err != nil {
-			return nil, fmt.Errorf("failed to fetch order: %v", err)
+			return nil, fmt.Errorf("failed to scan order: %v", err)
 		}
-		defer rows.Close()
-	
-		var order model.Order
-		if rows.Next() {
-			err := rows.Scan(
-				&order.Id, &order.Shipper, &order.FromAddress, &order.FromZipCode, &order.FromCity, &order.FromCounty,
-				&order.FromPhone, &order.FromEmail, &order.Consignee, &order.ToAddress, &order.ToZipCode, &order.ToCity,
-				&order.ToCounty, &order.ToPhone, &order.ToEmail, &order.TotalWeight, &order.UserName, &order.Status, &order.OrderTime,
-				&order.ProductID, &order.Price, &order.PriceID, &order.Deliver, &order.Duration, &order.Distance,
-				)
-				if err != nil {
-					return nil, fmt.Errorf("failed to scan order: %v", err)
-				}
-			} else {
-				return nil, fmt.Errorf("order not found: %v", orderID)
-			}
-		
-			return &order, nil
-		}
+	} else {
+		return nil, fmt.Errorf("order not found: %v", orderID)
+	}
+
+	return &order, nil
+}
 
 func CheckoutApp(domain string, orderID string) (string, error) {
 	order, err := SearchOrderByID(orderID)
@@ -83,4 +83,3 @@ func CheckoutApp(domain string, orderID string) (string, error) {
 	//2. call stripe to checkout using Price ID
 	return stripe.CreateCheckoutSession(domain, order.PriceID)
 }
-

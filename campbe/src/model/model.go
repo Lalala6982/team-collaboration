@@ -69,9 +69,9 @@ type CreateOrderRequest struct {
 	SelectedOption string `json:"selected_option"`
 	OptionsID      string `json:"options_id"`
 	Status         string `json:"status"`
+	// Price          float64 `json:"price"`
 	// OrderTime      string  `json:"order_time"`
 	// ProductID      string  `json:"product_id"`
-	Price float64 `json:"price"`
 	// PriceID        string  `json:"price_id"`
 	// Deliver        string  `json:"deliver"`
 	// Duration       string  `json:"duration"`

@@ -31,8 +31,8 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 
 	exists, err := service.CheckUser(user.Username, user.Password)
 	if err != nil {
-		http.Error(w, "Failed to read user from Elasticsearch", http.StatusInternalServerError)
-		fmt.Printf("Failed to read user from Elasticsearch %v\n", err)
+		http.Error(w, "Failed to read user from Database", http.StatusInternalServerError)
+		fmt.Printf("Failed to read user from Database %v\n", err)
 		return
 	}
 
@@ -77,8 +77,8 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 
 	success, err := service.AddUser(&user)
 	if err != nil {
-		http.Error(w, "Failed to save user to Elasticsearch", http.StatusInternalServerError)
-		fmt.Printf("Failed to save user to Elasticsearch %v\n", err)
+		http.Error(w, "Failed to save user to Database", http.StatusInternalServerError)
+		fmt.Printf("Failed to save user to Database %v\n", err)
 		return
 	}
 	if !success {

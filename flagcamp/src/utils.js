@@ -68,7 +68,7 @@ export const getShippingOptions = (data) => {
     toEmail,
     totalWeight,
   } = data;
-    
+
   const formData = new FormData();
   formData.append("shipper", shipper);
   formData.append("from_address", fromAdress);
@@ -88,51 +88,50 @@ export const getShippingOptions = (data) => {
 
   return fetch(url, {
     method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-     },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: formData,
   }).then((response) => {
     handleResponseStatus(response, "Fail to upload app");
   });
 };
 
-
 export const createOrder = (data) => {
-    const url = `${domain}/upload`;
- 
-    const {
-      status,
-      orderTime,
-      productID,
-      priceID,
-      price,
-      deiverID,
-      duration,
-      distance,
-    } = data;
-      
-    const formData = new FormData();
-    formData.append("status", status);
-    formData.append("orderTime", orderTime);
-    formData.append("productID", productID);
-    formData.append("priceID", priceID);
-    formData.append("price", price);
-    formData.append("deiverID", deiverID);
-    formData.append("duration", duration);
-    formData.append("distance", distance);
-  
-    return fetch(url, {
-      method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-       },
-      body: formData,
-    }).then((response) => {
-      handleResponseStatus(response, "Fail to upload app");
-    });
+  const url = `${domain}/upload`;
+
+  const {
+    status,
+    orderTime,
+    productID,
+    priceID,
+    price,
+    deiverID,
+    duration,
+    distance,
+  } = data;
+
+  const formData = new FormData();
+  formData.append("status", status);
+  formData.append("orderTime", orderTime);
+  formData.append("productID", productID);
+  formData.append("priceID", priceID);
+  formData.append("price", price);
+  formData.append("deiverID", deiverID);
+  formData.append("duration", duration);
+  formData.append("distance", distance);
+
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: formData,
+  }).then((response) => {
+    handleResponseStatus(response, "Fail to upload app");
+  });
 };
-  
+
 export const searchOrder = (query) => {
   const id = query?.id ?? "";
   const status = query?.status ?? "";

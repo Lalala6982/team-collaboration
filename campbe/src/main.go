@@ -12,7 +12,8 @@ import (
 )
 
 func main() {
-    fmt.Println("started-service")
+	fmt.Println("started-service")
 	database.InitMysql()
-    log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
+	// constants.ProxySet()
+	log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
 }

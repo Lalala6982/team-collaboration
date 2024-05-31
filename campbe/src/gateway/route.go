@@ -149,10 +149,71 @@ func GetDroneRoute(origin, destination string) (float64, int, error) {
 		// log.Fatalf("Failed to get coordinates for destination: %v", err)
 		return 0.0, 0, fmt.Errorf("failed to get coordinates for destination: %v", err)
 	}
-
-    // Calculate the straight-line distance using the Haversine formula
-    distance := haversine(originLat, originLon, destLat, destLon)
-    duration := int (distance / constants.DRONE_VELOCITY * 60 + 1)
-    fmt.Printf("Distance: %.1f km, Duration: %d mins\n", distance, duration)
-    return distance, duration,nil
+	// Calculate the straight-line distance using the Haversine formula
+	distance := haversine(originLat, originLon, destLat, destLon)
+	duration := int(distance/constants.DRONE_VELOCITY*60 + 1)
+	fmt.Printf("Distance: %.1f km, Duration: %d mins\n", distance, duration)
+	return distance, duration, nil
 }
+
+// Proxy
+// func getDistanceMatrix(origin, destination string) (*DistanceMatrixResponse, error) {
+// 	baseURL := "https://maps.googleapis.com/maps/api/distancematrix/json"
+// 	params := url.Values{}
+// 	params.Add("origins", origin)
+// 	params.Add("destinations", destination)
+// 	params.Add("key", apiKey)
+
+// 	requestURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
+// 	resp, err := constants.Client.Get(requestURL)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer resp.Body.Close()
+
+// 	body, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	var distanceMatrixResponse DistanceMatrixResponse
+// 	err = json.Unmarshal(body, &distanceMatrixResponse)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return &distanceMatrixResponse, nil
+// }
+// func getCoordinates(address string) (float64, float64, error) {
+// 	baseURL := "https://maps.googleapis.com/maps/api/geocode/json"
+// 	params := url.Values{}
+// 	params.Add("address", address)
+// 	params.Add("key", apiKey)
+
+// 	requestURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
+// 	resp, err := constants.Client.Get(requestURL)
+// 	if err != nil {
+// 		return 0, 0, err
+// 	}
+// 	defer resp.Body.Close()
+
+// 	body, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return 0, 0, err
+// 	}
+
+// 	var geocodingResponse GeocodingResponse
+// 	err = json.Unmarshal(body, &geocodingResponse)
+// 	if err != nil {
+// 		return 0, 0, err
+// 	}
+// 	if geocodingResponse.Status != "OK" {
+// 		return 0, 0, fmt.Errorf("error in geocoding response: %s", geocodingResponse.Status)
+// 	}
+// 	if len(geocodingResponse.Results) == 0 {
+// 		return 0, 0, fmt.Errorf("no results found for address: %s", address)
+// 	}
+
+// 	location := geocodingResponse.Results[0].Geometry.Location
+// 	return location.Lat, location.Lng, nil
+// }

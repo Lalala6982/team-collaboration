@@ -34,7 +34,7 @@ func AddUser(user *model.User) (bool, error) {
 		return false, err
 	}
 	if exists {
-        fmt.Printf("User already exists.\n")
+		fmt.Printf("User already exists.\n")
 		return false, nil
 	}
 
@@ -44,8 +44,6 @@ func AddUser(user *model.User) (bool, error) {
 		return false, err
 	}
 
-
-    fmt.Printf("User is added: %s ", user.Username)
-    return false, nil
+	fmt.Printf("User is added: %s ", user.Username)
+	return false, nil
 }
-
