@@ -11,31 +11,32 @@ import (
 )
 
 func CreateOrderWithPrice(orderID string, orderPrice int64) (productID, priceID string, err error) {
-   stripe.Key = constants.STRIPE_API_KEY
-   product_params := &stripe.ProductParams{
-       ID:        &orderID,
-   }
-   newOrder, err := product.New(product_params)
-   if err != nil {
-       fmt.Println("Failed to create product:" + err.Error())
-       return "", "", err
-   }
+	stripe.Key = constants.STRIPE_API_KEY
+	product_params := &stripe.ProductParams{
+		Name: &orderID,
+		// ID: &orderID,
+	}
+	newOrder, err := product.New(product_params)
+	if err != nil {
+		fmt.Println("Failed to create product:" + err.Error())
+		return "", "", err
+	}
 
-   price_params := &stripe.PriceParams{
-       Currency:   stripe.String(string(stripe.CurrencyUSD)),
-	   Product:    stripe.String(newOrder.ID),
-       UnitAmount: &orderPrice,
-   }
-   newPrice, err := price.New(price_params)
-   if err != nil {
-       fmt.Println("Failed to create price:" + err.Error())
-       return "", "", err
-   }
+	price_params := &stripe.PriceParams{
+		Currency:   stripe.String(string(stripe.CurrencyUSD)),
+		Product:    stripe.String(newOrder.ID),
+		UnitAmount: &orderPrice,
+	}
+	newPrice, err := price.New(price_params)
+	if err != nil {
+		fmt.Println("Failed to create price:" + err.Error())
+		return "", "", err
+	}
 
-   fmt.Println("Success! Here is your order id: " + newOrder.ID)
-   fmt.Println("Success! Here is your price id: " + newPrice.ID)
+	fmt.Println("Success! Here is your order id: " + newOrder.ID)
+	fmt.Println("Success! Here is your price id: " + newPrice.ID)
 
-   return newOrder.ID, newPrice.ID, nil
+	return newOrder.ID, newPrice.ID, nil
 }
 
 func CreateCheckoutSession(domain string, priceID string) (string, error) {

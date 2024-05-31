@@ -43,6 +43,9 @@ func AddUser(user *model.User) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	fmt.Printf("User is added: %s\n", user.Username)
-	return true, nil
+
+
+    fmt.Printf("User is added: %s ", user.Username)
+    return false, nil
 }
+

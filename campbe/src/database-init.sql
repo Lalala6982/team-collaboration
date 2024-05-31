@@ -56,7 +56,7 @@ CREATE TABLE orders (
     to_phone VARCHAR(100),
     to_email VARCHAR(100),
     total_weight INT NOT NULL,
-    user_id INT,
+    user_name VARCHAR(255),
     status VARCHAR(100),
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     product_id VARCHAR(255),
