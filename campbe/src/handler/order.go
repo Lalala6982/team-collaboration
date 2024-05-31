@@ -209,9 +209,8 @@ func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	// Set response headers and write response
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
-	
- }
 
+}
 
 // searchOrderHandler handles the request to search for an order by ID
 func searchOrderHandler(w http.ResponseWriter, r *http.Request) {

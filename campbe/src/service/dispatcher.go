@@ -19,7 +19,6 @@ type Option struct {
 	Distance       float64 `json:"distance"`
 	Duration       int     `json:"duration"`
 	Price          float64 `json:"price"`
-
 }
 
 type OptionsStore struct {
@@ -115,8 +114,8 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 		BaseId:         recommendedOption.BaseId,
 		Transportation: "robot",
 		Distance:       recommendedOption.Distance * 2,
-		Duration:       recommendedOption.Duration + 20*60,
-		Price:          recommendedOption.Distance * constants.ROBOT_CHARGE / 3,
+		Duration:       recommendedOption.Duration * 6 / 5,
+		Price:          recommendedOption.Distance * constants.ROBOT_CHARGE * 2 / 3,
 	}
 	options = append(options, cheapestOption)
 
@@ -130,9 +129,8 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 	return options, optionsID, nil
 }
 
-
-	// options[0].Transportation = "robot"
-	// options[0].Distance = 1e9
+// options[0].Transportation = "robot"
+// options[0].Distance = 1e9
 // 	for index, base := range bases {
 // 		distance1, duration1 := gateway.GetRobotRoute(base.BaseAddress, from)
 // 		distance2, _ := gateway.GetRobotRoute(to, base.BaseAddress)
@@ -146,7 +144,7 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 // 	distance1, duration1 := gateway.GetRobotRoute(from, to)
 // 	options[0].Distance += distance1
 // 	options[0].Duration += duration1
-	
+
 // 	// Fastest: drone route
 // 	options[1].Transportation = "drone"
 // 	options[1].Distance = 1e9
@@ -170,12 +168,11 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 // 	options[2].Distance = options[0].Distance * 2
 // 	options[2].Duration = options[0].Duration + 20*60
 
-
 // 	// return recommended options
 // 	options[0].Price = options[0].Distance * constants.ROBOT_CHARGE
 // 	options[1].Price = options[1].Distance * constants.DRONE_CHARGE
 // 	options[2].Price = options[2].Distance * constants.ROBOT_CHARGE / 3
-	
+
 //     fmt.Println(options)
 // 	return options, nil
 // }
