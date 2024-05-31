@@ -17,7 +17,7 @@ type Order struct {
 	ToPhone     string  `json:"to_phone"`
 	ToEmail     string  `json:"to_email"`
 	TotalWeight int     `json:"total_weight"`
-	UserID      int     `jason:"user_id"`
+	UserName    string  `jason:"user_name"`
 	Status      string  `json:"status"`
 	OrderTime   string  `json:"order_time"`
 	ProductID   string  `json:"product_id"`
@@ -29,7 +29,7 @@ type Order struct {
 }
 
 type User struct {
-	ID       int    `jason:"id"`
+	Id       int    `jason:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -50,32 +50,32 @@ type Deliver struct {
 }
 
 type CreateOrderRequest struct {
-	Shipper        string  `json:"shipper"`
-	FromAddress    string  `json:"from_address"`
-	FromZipCode    string  `json:"from_zip_code"`
-	FromCity       string  `json:"from_city"`
-	FromCounty     string  `json:"from_county"`
-	FromPhone      string  `json:"from_phone"`
-	FromEmail      string  `json:"from_email"`
-	Consignee      string  `json:"consignee"`
-	ToAddress      string  `json:"to_address"`
-	ToZipCode      string  `json:"to_zip_code"`
-	ToCity         string  `json:"to_city"`
-	ToCounty       string  `json:"to_county"`
-	ToPhone        string  `json:"to_phone"`
-	ToEmail        string  `json:"to_email"`
-	TotalWeight    int     `json:"total_weight"`
-	UserID         int     `json:"user_id"`
-	SelectedOption string  `json:"selected_option"`
-	OptionsID      string  `json:"options_id"`
-	Status         string  `json:"status"`
-	OrderTime      string  `json:"order_time"`
-	ProductID      string  `json:"product_id"`
-	Price          float64 `json:"price"`
-	PriceID        string  `json:"price_id"`
-	Deliver        string  `json:"deliver"`
-	Duration       string  `json:"duration"`
-	Distance       float64 `json:"distance"`
+	Shipper        string `json:"shipper"`
+	FromAddress    string `json:"from_address"`
+	FromZipCode    string `json:"from_zip_code"`
+	FromCity       string `json:"from_city"`
+	FromCounty     string `json:"from_county"`
+	FromPhone      string `json:"from_phone"`
+	FromEmail      string `json:"from_email"`
+	Consignee      string `json:"consignee"`
+	ToAddress      string `json:"to_address"`
+	ToZipCode      string `json:"to_zip_code"`
+	ToCity         string `json:"to_city"`
+	ToCounty       string `json:"to_county"`
+	ToPhone        string `json:"to_phone"`
+	ToEmail        string `json:"to_email"`
+	TotalWeight    int    `json:"total_weight"`
+	UserName       string `json:"user_name"`
+	SelectedOption string `json:"selected_option"`
+	OptionsID      string `json:"options_id"`
+	Status         string `json:"status"`
+	// OrderTime      string  `json:"order_time"`
+	// ProductID      string  `json:"product_id"`
+	Price float64 `json:"price"`
+	// PriceID        string  `json:"price_id"`
+	// Deliver        string  `json:"deliver"`
+	// Duration       string  `json:"duration"`
+	// Distance       float64 `json:"distance"`
 }
 
 type ShippingInfoRequest struct {
