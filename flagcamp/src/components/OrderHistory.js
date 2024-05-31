@@ -54,7 +54,7 @@ function OrderHistory() {
             </Col>
             <Col>
                 <Space>
-                    <Input placeholder="Search tickets..." prefix={<SearchOutlined />}/>
+                    <Input placeholder="Search orders..." prefix={<SearchOutlined />}/>
                     <Button  type="primary">Filter</Button>
                 </Space>
                 

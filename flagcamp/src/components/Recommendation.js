@@ -3,14 +3,14 @@ import { Form, Divider, Button } from "antd";
 import ShippingOptions from "./ShippingOptions";
 import OrderSummary from "./OrderSummary";
 import "../App.css";
-import { checkout, createOrder } from "../utils"
+import { checkout, createOrder } from "../utils";
 
 const { Item } = Form;
 
 const Recommendation = () => {
   const handleClick = (data, option) => {
-    createOrder(data)
-    checkout(option.id)
+    createOrder(data);
+    checkout(option.id);
   };
   return (
     <div className="shipping-info-container">
@@ -23,12 +23,12 @@ const Recommendation = () => {
           </section>
         </section>
         <section className="column">
-          <OrderSummary/>
+          <OrderSummary />
           <Button
             type="primary"
             htmlType="submit"
             className="package-form-submit-button"
-            style={{borderRadius: 5}}
+            style={{ borderRadius: 5 }}
             onClick={handleClick}
           >
             Continue to payment

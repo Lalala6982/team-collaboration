@@ -1,20 +1,17 @@
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input, Modal, message } from "antd";
 import { useState } from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { register } from "../utils";
-import { ShowSignup } from "../App"
 
 const SignupButton = () => {
   const [modalVisible, setModalVisible] = useState(false);
-
   const [loading, setLoading] = useState(false);
 
   const handleRegisterOnClick = () => {
     setModalVisible(true);
   };
-
-  const handleRegisterCancel = () => {
-    setShowSignup(false);
+  const handleModalCancel = () => {
+    setModalVisible(false);
   };
 
   const handleFormSubmit = async (data) => {
@@ -22,7 +19,7 @@ const SignupButton = () => {
 
     try {
       await register(data);
-      message.success("Sign up successfully!");
+      message.success("Sign up successfully");
       setModalVisible(false);
     } catch (error) {
       message.error(error.message);
@@ -33,44 +30,60 @@ const SignupButton = () => {
 
   return (
     <>
-      <Form onFinish={handleFormSubmit}>
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Please enter username!" }]}
-        >
-          <Input
-            disabled={loading}
-            prefix={<UserOutlined />}
-            placeholder="Username"
-          />
-        </Form.Item>
-        <Form.Item
-          rules={[
-            {
-              required: true,
-              message: "Please enter password!",
-            },
-          ]}
-        >
-          <Input.Password
-            disabled={loading}
-            prefix={<UserOutlined />}
-            placeholder="Password"
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button
-            loading={loading}
-            type="primary"
-            htmlType="submit"
-            style={{ width: "100%" }}
-            onClick={handleRegisterOnClick}
+      <Button
+        type="text"
+        style={{ padding: 0 }}
+        onClick={handleRegisterOnClick}
+      >
+        SignUp
+      </Button>
+      <Modal
+        title="Sign Up"
+        footer={null} //delete the bottom two buttons "OK" and "Cancel"
+        visible={modalVisible}
+        onCancel={handleModalCancel}
+      >
+        <Form onFinish={handleFormSubmit}>
+          <Form.Item
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Username!",
+              },
+            ]}
           >
-            Sign Up
-          </Button>
-        </Form.Item>
-      </Form>
+            <Input
+              disabled={loading}
+              prefix={<UserOutlined />}
+              placeholder="Username"
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Password!",
+              },
+            ]}
+          >
+            <Input.Password disabled={loading} placeholder="Password" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              loading={loading}
+              type="primary"
+              htmlType="submit"
+              style={{ width: "100%" }}
+            >
+              Sign up
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 };
+
 export default SignupButton;

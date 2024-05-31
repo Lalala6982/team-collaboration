@@ -75,40 +75,37 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	order := model.Order{
-		Id:             orderID,
-		Shipper:        req.Shipper,
-		FromAddress:    req.FromAddress,
-		FromZipCode:    req.FromZipCode,
-		FromCity:       req.FromCity,
-		FromCounty:     req.FromCounty,
-		FromPhone:      req.FromPhone,
-		FromEmail:      req.FromEmail,
-		Consignee:      req.Consignee,
-		ToAddress:      req.ToAddress,
-		ToZipCode:      req.ToZipCode,
-		ToCity:         req.ToCity,
-		ToCounty:       req.ToCounty,
-		ToPhone:        req.ToPhone,
-		ToEmail:        req.ToEmail,
-		TotalWeight:    req.TotalWeight,
-		UserID:         req.UserID,
-		Status:         req.Status,
-		OrderTime:      orderTime.Format("2006-01-02 15:04:05"),
-		ProductID:      req.ProductID,
-		Price:          req.Price,
-		PriceID:        req.PriceID,
-		Deliver:        selectedOption.Transportation,
-		Duration:       strconv.Itoa(selectedOption.Duration),
-		Distance:       selectedOption.Distance,
+		Id:          orderID,
+		Shipper:     req.Shipper,
+		FromAddress: req.FromAddress,
+		FromZipCode: req.FromZipCode,
+		FromCity:    req.FromCity,
+		FromCounty:  req.FromCounty,
+		FromPhone:   req.FromPhone,
+		FromEmail:   req.FromEmail,
+		Consignee:   req.Consignee,
+		ToAddress:   req.ToAddress,
+		ToZipCode:   req.ToZipCode,
+		ToCity:      req.ToCity,
+		ToCounty:    req.ToCounty,
+		ToPhone:     req.ToPhone,
+		ToEmail:     req.ToEmail,
+		TotalWeight: req.TotalWeight,
+		UserID:      req.UserID,
+		Status:      req.Status,
+		OrderTime:   orderTime.Format("2006-01-02 15:04:05"),
+		ProductID:   req.ProductID,
+		Price:       req.Price,
+		PriceID:     req.PriceID,
+		Deliver:     selectedOption.Transportation,
+		Duration:    strconv.Itoa(selectedOption.Duration),
+		Distance:    selectedOption.Distance,
 	}
 
-	
 	if err := database.SaveOrderToDB(order); err != nil {
 		http.Error(w, "Failed to save order to database: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	
 
 	// Respond to the client
 	w.WriteHeader(http.StatusCreated)
@@ -164,9 +161,8 @@ func orderHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	// Set response headers and write response
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
-	
- }
 
+}
 
 // searchOrderHandler handles the request to search for an order by ID
 func searchOrderHandler(w http.ResponseWriter, r *http.Request) {
