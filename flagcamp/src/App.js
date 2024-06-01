@@ -28,10 +28,10 @@ const App = () => {
   const [options, setOptions] = useState([]);
   // const [activeKey, setActiveTabKey] = useState("1");
 
-  // useEffect(() => {
-  //   const authToken = localStorage.getItem("authToken");
-  //   setAuthed(authToken !== null);
-  // }, []);
+  useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    setAuthed(authToken !== null);
+  }, []);
   const handleLoginSuccess = () => {
     setAuthed(true);
   };
