@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap");
 
 .App {
   text-align: center;
@@ -76,17 +76,17 @@
   background-color: green;
 }
 
-.ship-option-style-orign{
+.ship-option-style-orign {
   margin-bottom: 20px;
   width: 100%;
-  border-color:gray;
+  border-color: gray;
   background-color: #fafaf5;
   border-radius: 5px;
   border-width: 1px;
   height: 140px;
 }
 
-.ship-option-style-orign:focus{
+.ship-option-style-orign:focus {
   margin-bottom: 20px;
   width: 100%;
   background-color: #fafaf5;
@@ -95,7 +95,6 @@
   height: 140px;
   border-color: aquamarine;
 }
-
 
 .section-title {
   font-size: 26px;
@@ -129,8 +128,7 @@
 }
 
 .header-text {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700; /* Adjust weight as needed */
-    font-size: 40px; /* Adjust size as needed */
+  font-family: "Playfair Display", serif;
+  font-weight: 700; /* Adjust weight as needed */
+  font-size: 40px; /* Adjust size as needed */
 }
-

@@ -23,7 +23,7 @@ const ShipFromForm = () => {
           />
         </Form.Item>
         <Form.Item
-          name="fromaddress"
+          name="fromAddress"
           label="Address"
           labelCol={{ flex: "110px" }}
           rules={[{ required: true }]}

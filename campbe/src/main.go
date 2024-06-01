@@ -1,6 +1,7 @@
 package main
 
 import (
+	"campbe/constants"
 	"campbe/database"
 	"campbe/handler"
 	"fmt"
@@ -14,6 +15,6 @@ import (
 func main() {
 	fmt.Println("started-service")
 	database.InitMysql()
-	// constants.ProxySet()
+	constants.ProxySet()
 	log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
 }

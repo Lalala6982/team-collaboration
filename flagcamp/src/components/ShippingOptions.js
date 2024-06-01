@@ -9,7 +9,7 @@ const options = [
   { name: "Lowest Cost", deliveryBy: "Date3", cost: 20.0 },
 ];
 
-const ShipingOptions = () => {
+const ShippingOptions = () => {
   const [loading, setLoading] = useState(false);
   const [color, setColor] = useState("rgb(209, 209, 209)");
 
@@ -41,7 +41,17 @@ const ShipingOptions = () => {
                   color: "grey",
                 }}
               >
-                Delivery By: {option.deliveryBy}
+                Total Distance: {option.distance}km
+              </div>
+              <div
+                style={{
+                  fontSize: 18,
+                  fontWeight: 500,
+                  textAlign: "start",
+                  color: "grey",
+                }}
+              >
+                Estimated Delivery Time: {option.duration}
               </div>
               <div
                 style={{
@@ -52,7 +62,7 @@ const ShipingOptions = () => {
                   marginRight: 5,
                 }}
               >
-                ${option.cost}
+                ${option.price}
               </div>
             </Button>
           ))}
@@ -62,4 +72,4 @@ const ShipingOptions = () => {
   );
 };
 
-export default ShipingOptions;
+export default ShippingOptions;

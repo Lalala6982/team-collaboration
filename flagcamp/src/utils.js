@@ -49,21 +49,21 @@ export const register = (credential) => {
 };
 
 export const getShippingOptions = (data) => {
-  const url = `${domain}/upload`;
+  const url = `${domain}/recommend`;
 
   const {
     shipper,
-    fromAdress,
+    fromAddress,
     fromZipCode,
     fromCity,
-    fromCounty,
+    // fromCounty,
     fromPhone,
     fromEmail,
     consignee,
-    toAdress,
+    toAddress,
     toZipCode,
     toCity,
-    toCounty,
+    // toCounty,
     toPhone,
     toEmail,
     totalWeight,
@@ -71,64 +71,48 @@ export const getShippingOptions = (data) => {
 
   const formData = new FormData();
   formData.append("shipper", shipper);
-  formData.append("from_address", fromAdress);
+  formData.append("from_address", fromAddress);
   formData.append("from_zip_code", fromZipCode);
   formData.append("from_city", fromCity);
-  formData.append("from_county", fromCounty);
+  // formData.append("from_county", fromCounty);
   formData.append("from_phone", fromPhone);
   formData.append("from_email", fromEmail);
   formData.append("consignee", consignee);
-  formData.append("to_address", toAdress);
+  formData.append("to_address", toAddress);
   formData.append("to_zip_code", toZipCode);
   formData.append("to_city", toCity);
-  formData.append("to_county", toCounty);
+  // formData.append("to_county", toCounty);
   formData.append("to_phone", toPhone);
   formData.append("to_email", toEmail);
   formData.append("total_weight", totalWeight);
 
+  console.log(data);
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+
   return fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: formData,
   }).then((response) => {
-    handleResponseStatus(response, "Fail to upload app");
+    handleResponseStatus(response, "Fail to get recommendation");
+    return response.json();
   });
 };
 
-export const createOrder = (data) => {
-  const url = `${domain}/upload`;
-
-  const {
-    status,
-    orderTime,
-    productID,
-    priceID,
-    price,
-    deiverID,
-    duration,
-    distance,
-  } = data;
-
-  const formData = new FormData();
-  formData.append("status", status);
-  formData.append("orderTime", orderTime);
-  formData.append("productID", productID);
-  formData.append("priceID", priceID);
-  formData.append("price", price);
-  formData.append("deiverID", deiverID);
-  formData.append("duration", duration);
-  formData.append("distance", distance);
+export const createOrder = (optionId) => {
+  const authToken = localStorage.getItem("authToken");
+  const url = `${domain}/upload?option_id=${optionId}`;
+  console.log(url);
 
   return fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
     },
-    body: formData,
   }).then((response) => {
     handleResponseStatus(response, "Fail to upload app");
+    return response.text();
   });
 };
 
@@ -173,7 +157,7 @@ export const getOrderHistory = (query) => {
 };
 
 export const checkout = (orderId) => {
-  const url = `${domain}/checkout?optionID=${orderId}`;
+  const url = `${domain}/checkout?orderID=${orderId}`;
 
   return fetch(url, {
     method: "POST",
@@ -183,7 +167,6 @@ export const checkout = (orderId) => {
   })
     .then((response) => {
       handleResponseStatus(response, "Fail to checkout");
-
       return response.text();
     })
     .then((redirectUrl) => {

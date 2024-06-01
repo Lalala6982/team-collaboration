@@ -32,7 +32,7 @@ const LoginForm = ({ onLoginSuccess }) => {
   return (
     <>
       <Button type="text" style={{ padding: 0 }} onClick={handleLoginOnClick}>
-        SignIn
+        Sign In
       </Button>
       <Modal
         title="Sign In"

@@ -1,18 +1,42 @@
-import React, { useState } from 'react';
-import { Table, Input, Button, Space, Divider, Row, Col } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import React, { useState } from "react";
+import { Table, Input, Button, Space, Divider, Row, Col } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import "../App.css";
 
 const data = [
-  { key: '1', date: 'Dec 5', orderId: 123486, trackingId: 5098021, status: 'Delivered' },
-  { key: '2', date: 'Dec 5', orderId: 650890, trackingId: 5098021, status: 'Delivered' },
-  { key: '3', date: 'Dec 5', orderId: 890566, trackingId: 5098021, status: 'Delivered' },
-  { key: '4', date: 'Dec 5', orderId: 210400, trackingId: 5098021, status: 'Delivered' },
+  {
+    key: "1",
+    date: "Dec 5",
+    orderId: 123486,
+    trackingId: 5098021,
+    status: "Delivered",
+  },
+  {
+    key: "2",
+    date: "Dec 5",
+    orderId: 650890,
+    trackingId: 5098021,
+    status: "Delivered",
+  },
+  {
+    key: "3",
+    date: "Dec 5",
+    orderId: 890566,
+    trackingId: 5098021,
+    status: "Delivered",
+  },
+  {
+    key: "4",
+    date: "Dec 5",
+    orderId: 210400,
+    trackingId: 5098021,
+    status: "Delivered",
+  },
 ];
 
 function OrderHistory() {
-  const [searchText, setSearchText] = useState('');
-  
+  const [searchText, setSearchText] = useState("");
+
   const handleSearch = (selectedKeys, confirm) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -20,50 +44,52 @@ function OrderHistory() {
 
   const handleReset = (clearFilters) => {
     clearFilters();
-    setSearchText('');
+    setSearchText("");
   };
 
   const columns = [
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
     },
     {
-      title: 'Order ID',
-      dataIndex: 'orderId',
-      key: 'orderId',
+      title: "Order ID",
+      dataIndex: "orderId",
+      key: "orderId",
     },
     {
-      title: 'Tracking ID',
-      dataIndex: 'trackingId',
-      key: 'trackingId',
+      title: "Tracking ID",
+      dataIndex: "trackingId",
+      key: "trackingId",
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-    }
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
   ];
 
-  return(
+  return (
     <div>
-        <Row justify="space-between">
-            <Col>
-                <h1 className='header-text'>Order History</h1>
-            </Col>
-            <Col>
-                <Space>
-                    <Input placeholder="Search tickets..." prefix={<SearchOutlined />}/>
-                    <Button  type="primary">Filter</Button>
-                </Space>
-                
-            </Col>
-        </Row>
-        <Divider/>
-        <Table columns={columns} dataSource={data} />
+      <Row justify="space-between">
+        <Col>
+          <h1 className="header-text">Order History</h1>
+        </Col>
+        <Col>
+          <Space>
+            <Input
+              placeholder="Search tickets..."
+              prefix={<SearchOutlined />}
+            />
+            <Button type="primary">Filter</Button>
+          </Space>
+        </Col>
+      </Row>
+      <Divider />
+      <Table columns={columns} dataSource={data} />
     </div>
-  ) 
+  );
 }
 
 export default OrderHistory;

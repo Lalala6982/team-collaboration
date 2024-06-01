@@ -35,7 +35,7 @@ const SignupButton = () => {
         style={{ padding: 0 }}
         onClick={handleRegisterOnClick}
       >
-        SignUp
+        Sign Up
       </Button>
       <Modal
         title="Sign Up"

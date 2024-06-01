@@ -8,19 +8,30 @@ import SignupButton from "./components/SignupButton";
 import LoginForm from "./components/LoginForm";
 import OrderSummary from "./components/OrderSummary";
 import OrderHistory from "./components/OrderHistory";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  Link,
+  redirect,
+} from "react-router-dom";
+import Recommendation from "./components/Recommendation";
 
 const { Header, Content } = Layout;
 const { TabPane } = Tabs;
 
 const App = () => {
-  const [authed, setAuthed] = useState(); // Remember to set to false at final implementation
-  const [currentTab, setCurrentTab] = useState("1");
-  const [activeKey, setActiveTabKey] = useState("1");
+  const [authed, setAuthed] = useState(false); // Remember to set to false at final implementation
+  const [currentTab, setCurrentTab] = useState("0");
+  const [options, setOptions] = useState([]);
+  // const [activeKey, setActiveTabKey] = useState("1");
 
-  useEffect(() => {
-    const authToken = localStorage.getItem("authToken");
-    setAuthed(authToken !== null);
-  }, []);
+  // useEffect(() => {
+  //   const authToken = localStorage.getItem("authToken");
+  //   setAuthed(authToken !== null);
+  // }, []);
   const handleLoginSuccess = () => {
     setAuthed(true);
   };
@@ -28,13 +39,12 @@ const App = () => {
     localStorage.removeItem("authToken");
     setAuthed(false);
   };
-
   const userMenu = () => {
     if (authed) {
       return (
         <Menu>
           <Menu.Item key="logout" onClick={handleLogOut}>
-            LogOut
+            Log Out
           </Menu.Item>
         </Menu>
       );
@@ -51,17 +61,28 @@ const App = () => {
     );
   };
 
+  const handleRecommendation = (data) => {
+    console.log(data);
+    setOptions(data);
+  };
   const handleTabChange = (key) => {
     setCurrentTab(key);
   };
   const renderContent = (key) => {
     switch (key) {
       case "1":
-        return <HomePage authed={authed} />;
+        return (
+          <Shipping
+            provideOptions={handleRecommendation}
+            navigateToRecommendation={handleTabChange}
+          />
+        );
       case "2":
-        return <Shipping />;
+        return <Recommendation options={options} />;
       case "3":
         return <About />;
+      default:
+        return <HomePage authed={authed} />;
     }
   };
 
@@ -74,13 +95,14 @@ const App = () => {
         <div className="site-name-font">Shipping Service</div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Tabs
-            defaultActiveKey="1"
+            defaultActiveKey="0"
             onChange={handleTabChange}
             destroyInactiveTabPane={true}
             className="equal-width-tabs"
           >
-            <TabPane tab="Home" key="1" />
-            <TabPane tab="Shipping" key="2" />
+            <TabPane tab="Home" key="0" />
+            <TabPane tab="Shipping" key="1" />
+            <TabPane tab="Recommendation" key="2" />
             <TabPane tab="About Us" key="3" />
           </Tabs>
           <div
@@ -106,6 +128,14 @@ const App = () => {
           overflow: "auto",
         }}
       >
+        {/* <Router>
+          <Routes>
+            <Route exact path="/" element={<HomePage />} />
+            <Route path="/shipping" element={<Shipping />} />
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Router> */}
         {renderContent(currentTab)}
       </Content>
     </Layout>

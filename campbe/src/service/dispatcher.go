@@ -7,26 +7,27 @@ import (
 	"campbe/model"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/google/uuid"
 )
 
 type Option struct {
-	OptionID       string  `json:"option_id"`
+	// OptionID       string  `json:"option_id"`
+	OptionId       int     `json:"option_id"`
 	BaseId         int     `json:"base_id"`
+	Name           string  `json:"name"`
 	Transportation string  `json:"transportation"`
 	Distance       float64 `json:"distance"`
 	Duration       int     `json:"duration"`
 	Price          float64 `json:"price"`
 }
 
-type OptionsStore struct {
-	Options   []Option
-	Timestamp time.Time
-}
+// type OptionsStore struct {
+// 	Options   []Option
+// 	Timestamp time.Time
+// }
 
-var OptionsCache = make(map[string]OptionsStore)
+// var OptionsCache = make(map[string]OptionsStore)
 
 func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 	var options []Option
@@ -48,7 +49,9 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 
 	// Recommended: robot route
 	recommendedOption := Option{
-		OptionID:       uuid.New().String(),
+		// OptionID:       uuid.New().String(),
+		OptionId:       0,
+		Name:           "Recommended",
 		Transportation: "robot",
 		Distance:       1e9,
 	}
@@ -79,7 +82,9 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 
 	// Fastest: drone route
 	fastestOption := Option{
-		OptionID:       uuid.New().String(),
+		// OptionID:       uuid.New().String(),
+		OptionId:       1,
+		Name:           "Fastest",
 		Transportation: "drone",
 		Distance:       1e9,
 	}
@@ -110,7 +115,9 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 
 	// Cheapest: robot route but shared with others
 	cheapestOption := Option{
-		OptionID:       uuid.New().String(),
+		// OptionID:       uuid.New().String(),
+		OptionId:       2,
+		Name:           "Cheapest",
 		BaseId:         recommendedOption.BaseId,
 		Transportation: "robot",
 		Distance:       recommendedOption.Distance * 2,
@@ -121,16 +128,34 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 
 	// Store options in cache with a unique identifier
 	optionsID := uuid.New().String()
-	OptionsCache[optionsID] = OptionsStore{
-		Options:   options,
-		Timestamp: time.Now(),
-	}
+	// OptionsCache[optionsID] = OptionsStore{
+	// 	Options:   options,
+	// 	Timestamp: time.Now(),
+	// }
 
 	return options, optionsID, nil
 }
 
-// options[0].Transportation = "robot"
-// options[0].Distance = 1e9
+// func GetDispatchingOptions(from, to string) ([]Option, string, error) {
+// 	var options []Option
+// 	// Prepare SQL query
+// 	query := "SELECT id, base_address, base_city, base_zip_code FROM bases"
+// 	results, err := database.ReadFromDB(query)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	// Iterate over all the results
+// 	var bases []model.Base
+// 	for results.Next() {
+// 		var base model.Base
+// 		if err := results.Scan(&base.Id, &base.BaseAddress, &base.BaseCity, &base.BaseZipCode); err != nil {
+// 			log.Fatal(err)
+// 		}
+// 		bases = append(bases, base)
+// 	}
+
+// 	options[0].Transportation = "robot"
+// 	options[0].Distance = 1e9
 // 	for index, base := range bases {
 // 		distance1, duration1 := gateway.GetRobotRoute(base.BaseAddress, from)
 // 		distance2, _ := gateway.GetRobotRoute(to, base.BaseAddress)
@@ -173,6 +198,6 @@ func GetDispatchingOptions(from, to string) ([]Option, string, error) {
 // 	options[1].Price = options[1].Distance * constants.DRONE_CHARGE
 // 	options[2].Price = options[2].Distance * constants.ROBOT_CHARGE / 3
 
-//     fmt.Println(options)
+// 	fmt.Println(options)
 // 	return options, nil
 // }
