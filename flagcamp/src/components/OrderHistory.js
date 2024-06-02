@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Input, Button, Space, Divider, Row, Col } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "../App.css";
-import { getOrderHistory } from "../utils";
+import { getOrderHistory, searchOrder } from "../utils";
 
 function OrderHistory() {
   const [orderId, setOrderId] = useState("");
@@ -25,30 +25,44 @@ function OrderHistory() {
     fetchOrderHistory();
   }, []);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     // fetchOrderHistory({ id: orderId });
+    setLoading(true);
+    try {
+      const data = await searchOrder(orderId);
+      console.log("data",data);
+      setOrderData([data])
+    } catch (error) {
+      console.error('Error fetching order history:', error);
+    }
+    setLoading(false);
   };
 
   const columns = [
     {
       title: "Date",
       dataIndex: "order_time",
-      key: "date",
+      key: "Date",
     },
     {
       title: "Order ID",
       dataIndex: "id",
-      key: "orderId",
+      key: "OrderId",
     },
     {
-      title: "Tracking ID",
-      dataIndex: "id",
-      key: "trackingId",
+      title: "From City",
+      dataIndex: "from_city",
+      key: "FromCity",
+    },
+    {
+      title: "To City",
+      dataIndex: "to_city",
+      key: "ToCity",
     },
     {
       title: "Status",
       dataIndex: "status",
-      key: "status",
+      key: "Status",
     },
   ];
 

@@ -20,7 +20,7 @@ var (
 
 func InitMysql() {
 	// Open and connect to database
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", constants.DB_USER, constants.DB_PASSWORD, constants.DB_HOST, constants.DB_PORT, constants.DB_NAME)
+	dsn := dsn := "flagcamp:flagcamp@tcp(database-3.cn66wegcqi7q.us-east-2.rds.amazonaws.com:3306)/mydb"
 	Dbsql, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
