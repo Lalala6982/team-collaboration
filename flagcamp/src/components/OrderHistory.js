@@ -1,66 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Input, Button, Space, Divider, Row, Col } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "../App.css";
-
-const data = [
-  {
-    key: "1",
-    date: "Dec 5",
-    orderId: 123486,
-    trackingId: 5098021,
-    status: "Delivered",
-  },
-  {
-    key: "2",
-    date: "Dec 5",
-    orderId: 650890,
-    trackingId: 5098021,
-    status: "Delivered",
-  },
-  {
-    key: "3",
-    date: "Dec 5",
-    orderId: 890566,
-    trackingId: 5098021,
-    status: "Delivered",
-  },
-  {
-    key: "4",
-    date: "Dec 5",
-    orderId: 210400,
-    trackingId: 5098021,
-    status: "Delivered",
-  },
-];
+import { getOrderHistory } from "../utils";
 
 function OrderHistory() {
-  const [searchText, setSearchText] = useState("");
+  const [orderId, setOrderId] = useState("");
+  const [orderData, setOrderData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = (selectedKeys, confirm) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
+  const fetchOrderHistory = async (query = {}) => {
+    setLoading(true);
+    try {
+      const data = await getOrderHistory();
+      console.log("data", data)
+      setOrderData(data);
+    } catch (error) {
+      console.error("Error fetching order history:", error);
+    }
+    setLoading(false);
   };
 
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setSearchText("");
+  useEffect(() => {
+    fetchOrderHistory();
+  }, []);
+
+  const handleSearch = () => {
+    // fetchOrderHistory({ id: orderId });
   };
 
   const columns = [
     {
       title: "Date",
-      dataIndex: "date",
+      dataIndex: "order_time",
       key: "date",
     },
     {
       title: "Order ID",
-      dataIndex: "orderId",
+      dataIndex: "id",
       key: "orderId",
     },
     {
       title: "Tracking ID",
-      dataIndex: "trackingId",
+      dataIndex: "id",
       key: "trackingId",
     },
     {
@@ -79,17 +61,22 @@ function OrderHistory() {
         <Col>
           <Space>
             <Input
-              placeholder="Search tickets..."
+              placeholder="Order ID"
+              value={orderId}
+              onChange={(e) => setOrderId(e.target.value)}
               prefix={<SearchOutlined />}
             />
-            <Button type="primary">Filter</Button>
+            <Button type="primary" onClick={handleSearch} loading={loading}>
+              Filter
+            </Button>
           </Space>
         </Col>
       </Row>
       <Divider />
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={orderData} loading={loading} />
     </div>
   );
 }
 
 export default OrderHistory;
+

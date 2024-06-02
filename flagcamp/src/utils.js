@@ -116,12 +116,9 @@ export const createOrder = (optionId) => {
   });
 };
 
-export const searchOrder = (query) => {
-  const id = query?.id ?? "";
-  const status = query?.status ?? "";
-
+export const searchOrder = (orderID) => {
   const url = new URL(`${domain}/search`);
-  url.searchParams.append("id", id);
+  url.searchParams.append("order_id", orderID);
 
   return fetch(url, {
     headers: {
@@ -129,25 +126,17 @@ export const searchOrder = (query) => {
     },
   }).then((response) => {
     handleResponseStatus(response, "Fail to search order");
-
     return response.json();
   });
 };
 
-export const getOrderHistory = (query) => {
-  const id = query?.id ?? "";
-  const orderTime = query?.orderTime ?? "";
-  const status = query?.status ?? "";
-
+export const getOrderHistory = () => {
   const authToken = localStorage.getItem("authToken");
-  const url = new URL(`${domain}/search`);
-  url.searchParams.append("id", id);
-  url.searchParams.append("order_time", orderTime);
-  url.searchParams.append("status", status);
+  const url = new URL(`${domain}/orderhistory`);
 
   return fetch(url, {
     headers: {
-      Authorization: `Bearer ${authToken}`,
+      'Authorization': `Bearer ${authToken}`,
     },
   }).then((response) => {
     handleResponseStatus(response, "Fail to get order history");

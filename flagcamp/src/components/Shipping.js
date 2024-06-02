@@ -81,8 +81,8 @@ const Shipping = ({ provideOptions, navigateToRecommendation }) => {
             />
           </Form.Item>
           <Form.Item
-            name="fromCounty"
-            label="County:"
+            name="fromState"
+            label="State:"
             labelCol={{ flex: "110px" }}
             rules={[{ required: true }]}
           >
@@ -90,7 +90,7 @@ const Shipping = ({ provideOptions, navigateToRecommendation }) => {
               style={{
                 borderRadius: 20,
               }}
-              placeholder="County"
+              placeholder="State"
             />
           </Form.Item>
           <Form.Item
@@ -175,8 +175,8 @@ const Shipping = ({ provideOptions, navigateToRecommendation }) => {
             />
           </Form.Item>
           <Form.Item
-            name="toCounty"
-            label="County:"
+            name="toState"
+            label="State:"
             labelCol={{ flex: "110px" }}
             rules={[{ required: true }]}
           >
@@ -184,7 +184,7 @@ const Shipping = ({ provideOptions, navigateToRecommendation }) => {
               style={{
                 borderRadius: 20,
               }}
-              placeholder="County"
+              placeholder="State"
             />
           </Form.Item>
           <Form.Item

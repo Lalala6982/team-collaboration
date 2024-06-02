@@ -1,27 +1,41 @@
 import React, { useState } from "react";
-import { Row, Button, Input, Form, message, List, Card } from "antd";
+import { Button, Input, Form, message, Card } from "antd";
+import { searchOrder } from "../utils"; // Ensure correct import path
 
 function Tracking() {
   const [loading, setLoading] = useState(false);
-  const [trackingID, setTrackingID] = useState("");
-  const [trackingStatus, setTrackingStatus] = useState([]);
-  const [isVisible, setIsVisible] = useState(true);
+  const [orderID, setoOrderID] = useState("");
+  const [orderDetails, setOrderDetails] = useState(null);
 
-  const handleTrack = () => {
-    if (trackingID === "") {
+  const calculateProgress = (orderTime, duration) => {
+    const orderTimeMillis = new Date(orderTime).getTime();
+    const currentTimeMillis = new Date().getTime();
+    const elapsedTime = currentTimeMillis - orderTimeMillis;
+    const progress = Math.min((elapsedTime / (duration * 1000)) * 100, 100);
+    return progress.toFixed(2); // To get a percentage value with two decimal places
+  };
+
+  const calculateEstimatedDeliveryTime = (orderTime, duration) => {
+    const orderTimeDate = new Date(orderTime);
+    const deliveryTimeDate = new Date(orderTimeDate.getTime() + duration * 1000);
+    return deliveryTimeDate.toLocaleString(); // Format to a readable string
+  };
+
+  const handleTrack = async () => {
+    if (orderID === "") {
+      message.error("Please enter a tracking ID!");
       return;
+    } else {
+      setLoading(true);
+      try {
+        const data = await searchOrder(orderID);
+        setOrderDetails(data); // Adjust based on your API response structure
+      } catch (error) {
+        message.error(error.message);
+      } finally {
+        setLoading(false);
+      }
     }
-    setLoading(true);
-    setIsVisible(true);
-    // try {
-    //   const data = await getTrackingStatus(trackingID);
-    //   setTrackingStatus(data.result);
-    // } catch (error) {
-    //   message.error(error.message);
-    // } finally {
-    //   setLoading(false);
-    //   setIsVisible(false;)
-    // }
   };
 
   return (
@@ -41,32 +55,32 @@ function Tracking() {
           <Input
             style={{ width: 450, marginRight: 5 }}
             placeholder="Enter your Tracking ID"
-            value={trackingID}
-            onChange={(e) => setTrackingID(e.target.value)}
+            value={orderID}
+            onChange={(e) => setoOrderID(e.target.value)}
             onPressEnter={handleTrack}
           />
           <Button type="primary" onClick={handleTrack}>
             Track
           </Button>
         </Input.Group>
-        <List
-          loading={loading}
-          style={{
-            marginTop: 20,
-            height: "calc(100% - 30px)",
-            overflow: "auto",
-            display: isVisible ? "block" : "none",
-          }}
-          grid={{ gutter: 1, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
-          dataSource={[1]}
-          renderItem={(currentStatus) => (
-            <List.Item key={currentStatus}>
-              <Card title={currentStatus} />
-            </List.Item>
-          )}
-        />
       </Form.Item>
+      {orderDetails && (
+        <Card title="Order Details" style={{ marginTop: 20 }}>
+          <p>
+            Progress:{" "}
+            {calculateProgress(orderDetails.order_time, orderDetails.duration)}%
+          </p>
+          <p>
+            Estimated Delivery Time:{" "}
+            {calculateEstimatedDeliveryTime(
+              orderDetails.order_time,
+              orderDetails.duration
+            )}
+          </p>
+        </Card>
+      )}
     </Form>
   );
 }
+
 export default Tracking;
