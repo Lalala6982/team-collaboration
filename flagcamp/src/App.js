@@ -102,7 +102,7 @@ const App = () => {
           >
             <TabPane tab="Home" key="0" />
             <TabPane tab="Shipping" key="1" />
-            <TabPane tab="Recommendation" key="2" />
+            {/* <TabPane tab="Recommendation" key="2" /> */}
             <TabPane tab="About Us" key="3" />
           </Tabs>
           <div
