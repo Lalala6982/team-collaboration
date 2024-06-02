@@ -56,14 +56,14 @@ export const getShippingOptions = (data) => {
     fromAddress,
     fromZipCode,
     fromCity,
-    // fromCounty,
+    // FromState,
     fromPhone,
     fromEmail,
     consignee,
     toAddress,
     toZipCode,
     toCity,
-    // toCounty,
+    // ToState,
     toPhone,
     toEmail,
     totalWeight,
@@ -74,14 +74,14 @@ export const getShippingOptions = (data) => {
   formData.append("from_address", fromAddress);
   formData.append("from_zip_code", fromZipCode);
   formData.append("from_city", fromCity);
-  // formData.append("from_county", fromCounty);
+  // formData.append("from_state", FromState);
   formData.append("from_phone", fromPhone);
   formData.append("from_email", fromEmail);
   formData.append("consignee", consignee);
   formData.append("to_address", toAddress);
   formData.append("to_zip_code", toZipCode);
   formData.append("to_city", toCity);
-  // formData.append("to_county", toCounty);
+  // formData.append("to_state", ToState);
   formData.append("to_phone", toPhone);
   formData.append("to_email", toEmail);
   formData.append("total_weight", totalWeight);
@@ -136,7 +136,7 @@ export const getOrderHistory = () => {
 
   return fetch(url, {
     headers: {
-      'Authorization': `Bearer ${authToken}`,
+      Authorization: `Bearer ${authToken}`,
     },
   }).then((response) => {
     handleResponseStatus(response, "Fail to get order history");

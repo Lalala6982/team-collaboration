@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Button, Input, Form, message, Card } from "antd";
 import { searchOrder } from "../utils"; // Ensure correct import path
 
+const PREPARATION_TIME_MINUTES = 42;
+const PREPARATION_TIME_MILLISECONDS = PREPARATION_TIME_MINUTES * 60 * 1000;
+
 function Tracking() {
   const [loading, setLoading] = useState(false);
   const [orderID, setoOrderID] = useState("");
@@ -10,14 +13,18 @@ function Tracking() {
   const calculateProgress = (orderTime, duration) => {
     const orderTimeMillis = new Date(orderTime).getTime();
     const currentTimeMillis = new Date().getTime();
-    const elapsedTime = currentTimeMillis - orderTimeMillis;
-    const progress = Math.min((elapsedTime / (duration * 1000)) * 100, 100);
+    const elapsedTime = currentTimeMillis - orderTimeMillis ;
+    const totalDurationMillis = duration * 1000 * 60;
+    if (elapsedTime < PREPARATION_TIME_MILLISECONDS) { 
+      return 0;
+    }
+    const progress = Math.min(((elapsedTime - PREPARATION_TIME_MILLISECONDS)/ totalDurationMillis) * 100, 100);
     return progress.toFixed(2); // To get a percentage value with two decimal places
   };
 
   const calculateEstimatedDeliveryTime = (orderTime, duration) => {
     const orderTimeDate = new Date(orderTime);
-    const deliveryTimeDate = new Date(orderTimeDate.getTime() + duration * 1000);
+    const deliveryTimeDate = new Date(orderTimeDate.getTime() + PREPARATION_TIME_MILLISECONDS + duration * 1000 * 60);
     return deliveryTimeDate.toLocaleString(); // Format to a readable string
   };
 
