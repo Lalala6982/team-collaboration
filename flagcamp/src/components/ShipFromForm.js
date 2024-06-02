@@ -49,7 +49,7 @@ const ShipFromForm = () => {
           />
         </Form.Item>
         <Form.Item
-          name="fromCounty"
+          name="FromState"
           label="County:"
           labelCol={{ flex: "110px" }}
           rules={[{ required: true }]}

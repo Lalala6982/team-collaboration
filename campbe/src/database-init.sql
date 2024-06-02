@@ -45,14 +45,14 @@ CREATE TABLE orders (
     from_address VARCHAR(255) NOT NULL,
     from_zip_code VARCHAR(100) NOT NULL,
     from_city VARCHAR(100) NOT NULL,
-    from_county VARCHAR(100) NOT NULL,
+    from_state VARCHAR(100) NOT NULL,
     from_phone VARCHAR(100),
     from_email VARCHAR(100),
     consignee VARCHAR(100) NOT NULL,
     to_address VARCHAR(255) NOT NULL,
     to_zip_code VARCHAR(100) NOT NULL,
     to_city VARCHAR(100) NOT NULL,
-    to_county VARCHAR(100) NOT NULL,
+    to_state VARCHAR(100) NOT NULL,
     to_phone VARCHAR(100),
     to_email VARCHAR(100),
     total_weight INT NOT NULL,
@@ -71,10 +71,10 @@ CREATE TABLE orders (
 
 -- Insert records into the 'bases' table
 INSERT INTO bases (base_address, base_city, base_zip_code)
-VALUES ('153-44 S Conduit Ave', 'Jamaica', '11434');
+VALUES ('880 Post St', 'San Francisco', '94109');
 
 INSERT INTO bases (base_address, base_city, base_zip_code)
-VALUES ('900 Turnbull Canyon Rd', 'City Of Industry', '91745');
+VALUES ('668 Guerrero St', 'San Francisco', '94110');
 
 INSERT INTO bases (base_address, base_city, base_zip_code)
-VALUES ('1657 N Kostner Ave', 'Chicago', '60639');
+VALUES ('1240 Egbert Ave', 'San Francisco', '94124');
