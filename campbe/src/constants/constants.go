@@ -13,9 +13,9 @@ const (
 	USER_INDEX     = "user"
 	STRIPE_API_KEY = "sk_test_51P7ZK4IPesYaCTIpvs3UipNI8B8xrAPk1TTA8kRLEQ7FCtAGUdZVjXQFk3q7cEnkRV1GfCgzXUZO8wBKLS6Xm8jd00DupsUMHO"
 	MAP_API_KEY    = "AIzaSyA6no3J1oLtfvKm8okja-D0kxcz47KzD3k"
-	DRONE_VELOCITY = 100.0 // km/h
-	ROBOT_CHARGE   = 0.02  // $/km
-	DRONE_CHARGE   = 0.1   // $/km
+	DRONE_VELOCITY = 70.0 // km/h
+	ROBOT_CHARGE   = 8  // $/km
+	DRONE_CHARGE   = 15  // $/km
 	DB_USER        = "flagcamp"
 	DB_PASSWORD    = "flagcamp"
 	DB_HOST        = "localhost"

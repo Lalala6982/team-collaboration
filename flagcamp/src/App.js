@@ -6,17 +6,17 @@ import Shipping from "./components/Shipping";
 import { UserOutlined } from "@ant-design/icons";
 import SignupButton from "./components/SignupButton";
 import LoginForm from "./components/LoginForm";
-import OrderSummary from "./components/OrderSummary";
-import OrderHistory from "./components/OrderHistory";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-  Link,
-  redirect,
-} from "react-router-dom";
+// import OrderSummary from "./components/OrderSummary";
+// import OrderHistory from "./components/OrderHistory";
+// import {
+//   BrowserRouter as Router,
+//   Routes,
+//   Route,
+//   Navigate,
+//   useNavigate,
+//   Link,
+//   redirect,
+// } from "react-router-dom";
 import Recommendation from "./components/Recommendation";
 
 const { Header, Content } = Layout;

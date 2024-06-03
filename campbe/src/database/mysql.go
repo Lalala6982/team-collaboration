@@ -20,7 +20,7 @@ var (
 
 func InitMysql() {
 	// Open and connect to database
-	dsn := dsn := "flagcamp:flagcamp@tcp(database-3.cn66wegcqi7q.us-east-2.rds.amazonaws.com:3306)/mydb"
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", constants.DB_USER, constants.DB_PASSWORD, constants.DB_HOST, constants.DB_PORT, constants.DB_NAME)
 	Dbsql, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
@@ -67,16 +67,16 @@ func ReadFromDB(query string, args ...interface{}) (*sql.Rows, error) {
 }
 
 func SaveOrderToDB(order model.Order) error {
-	query := `INSERT INTO orders (id, shipper, from_address, from_zip_code, from_city, from_county, from_phone, from_email, 
- 	   consignee, to_address, to_zip_code, to_city, to_county, to_phone, to_email, total_weight, user_name, status, order_time, 
+	query := `INSERT INTO orders (id, shipper, from_address, from_zip_code, from_city, from_state, from_phone, from_email, 
+ 	   consignee, to_address, to_zip_code, to_city, to_state, to_phone, to_email, total_weight, user_name, status, order_time, 
  	   product_id, price, price_id, deliver, duration, distance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	// Log the query and parameters for debugging purposes
 	fmt.Println("Executing query:", query)
 	fmt.Printf("With parameters: %+v\n", order)
 
-	_, err = Dbsql.Exec(query, order.Id, order.Shipper, order.FromAddress, order.FromZipCode, order.FromCity, order.FromCounty, order.FromPhone,
-		order.FromEmail, order.Consignee, order.ToAddress, order.ToZipCode, order.ToCity, order.ToCounty, order.ToPhone, order.ToEmail,
+	_, err = Dbsql.Exec(query, order.Id, order.Shipper, order.FromAddress, order.FromZipCode, order.FromCity, order.FromState, order.FromPhone,
+		order.FromEmail, order.Consignee, order.ToAddress, order.ToZipCode, order.ToCity, order.ToState, order.ToPhone, order.ToEmail,
 		order.TotalWeight, order.UserName, order.Status, order.OrderTime, order.ProductID, order.Price, order.PriceID, order.Deliver,
 		order.Duration, order.Distance)
 	if err != nil {

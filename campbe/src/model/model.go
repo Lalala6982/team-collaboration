@@ -6,14 +6,14 @@ type Order struct {
 	FromAddress string  `json:"from_address"`
 	FromZipCode string  `json:"from_zip_code"`
 	FromCity    string  `json:"from_city"`
-	FromCounty  string  `json:"from_county"`
+	FromState   string  `json:"from_state"`
 	FromPhone   string  `json:"from_phone"`
 	FromEmail   string  `json:"from_email"`
 	Consignee   string  `json:"consignee"`
 	ToAddress   string  `json:"to_address"`
 	ToZipCode   string  `json:"to_zip_code"`
 	ToCity      string  `json:"to_city"`
-	ToCounty    string  `json:"to_county"`
+	ToState     string  `json:"to_state"`
 	ToPhone     string  `json:"to_phone"`
 	ToEmail     string  `json:"to_email"`
 	TotalWeight int     `json:"total_weight"`
@@ -54,14 +54,14 @@ type CreateOrderRequest struct {
 	FromAddress    string `json:"from_address"`
 	FromZipCode    string `json:"from_zip_code"`
 	FromCity       string `json:"from_city"`
-	FromCounty     string `json:"from_county"`
+	FromState      string `json:"from_state"`
 	FromPhone      string `json:"from_phone"`
 	FromEmail      string `json:"from_email"`
 	Consignee      string `json:"consignee"`
 	ToAddress      string `json:"to_address"`
 	ToZipCode      string `json:"to_zip_code"`
 	ToCity         string `json:"to_city"`
-	ToCounty       string `json:"to_county"`
+	ToState        string `json:"to_state"`
 	ToPhone        string `json:"to_phone"`
 	ToEmail        string `json:"to_email"`
 	TotalWeight    int    `json:"total_weight"`

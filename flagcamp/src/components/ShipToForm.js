@@ -47,7 +47,7 @@ const ShipToForm = () => {
           />
         </Form.Item>
         <Form.Item
-          name="toCounty"
+          name="ToState"
           label="County:"
           labelCol={{ flex: "110px" }}
           rules={[{ required: true }]}
@@ -72,11 +72,7 @@ const ShipToForm = () => {
             placeholder="Zip Code"
           />
         </Form.Item>
-        <Form.Item
-          name="toPhone"
-          label="Phone:"
-          labelCol={{ flex: "110px" }}
-        >
+        <Form.Item name="toPhone" label="Phone:" labelCol={{ flex: "110px" }}>
           <Input
             style={{
               borderRadius: 20,
@@ -84,11 +80,7 @@ const ShipToForm = () => {
             placeholder="Phone"
           />
         </Form.Item>
-        <Form.Item
-          name="toEmail"
-          label="Email:"
-          labelCol={{ flex: "110px" }}
-        >
+        <Form.Item name="toEmail" label="Email:" labelCol={{ flex: "110px" }}>
           <Input
             style={{
               borderRadius: 20,
